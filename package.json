@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
+    "v-phone-input": "^7.0.0",
     "vue": "^3.5.32",
     "vue-router": "^5.0.6"
   },
