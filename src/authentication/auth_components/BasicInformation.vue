@@ -7,7 +7,7 @@
                     label="First Name *"
                     required
                     :rules="[rules.required, rules.alphabetic, rules.max]"
-                    v-model="first_name"
+                    v-model="firstName"
                 >
                 </v-text-field>
             </v-col>
@@ -17,13 +17,13 @@
                     label="Last Name *"
                     required
                     :rules="[rules.required, rules.alphabetic, rules.max]"
-                    v-model="last_name"
+                    v-model="lastName"
                 >
                 </v-text-field>
             </v-col>
         </v-row>
         <v-phone-input
-            v-model="phone_number"
+            v-model="phoneNumber"
             :required="true"
             style="margin-top: 10px"
         ></v-phone-input>
@@ -39,9 +39,9 @@ const emit = defineEmits([
     'phoneNumberUpdate'
 ]);
 
-const first_name = ref('');
-const last_name = ref('');
-const phone_number = ref('');
+const firstName = ref('');
+const lastName = ref('');
+const phoneNumber = ref('');
 
 const rules = {
     required: (value) => !!value || 'Required.',
@@ -55,15 +55,15 @@ const rules = {
     max: (v) => v.length <= 40 || 'Max 40 characters'
 };
 
-watch(first_name, (value) => {
+watch(firstName, (value) => {
     emit('firstNameUpdate', value);
 });
 
-watch(last_name, (value) => {
+watch(lastName, (value) => {
     emit('lastNameUpdate', value);
 });
 
-watch(phone_number, (value) => {
+watch(phoneNumber, (value) => {
     emit('phoneNumberUpdate', value)
 })
 

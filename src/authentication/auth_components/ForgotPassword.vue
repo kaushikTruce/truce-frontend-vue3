@@ -23,7 +23,7 @@
                 </v-btn>
             </v-col>
         </v-row>
-        <p v-if="email_sent" style="color: red">
+        <p v-if="emailSent" style="color: red">
             We've sent you an email with your verification code.
         </p>
     </div>
@@ -40,7 +40,7 @@ const emit = defineEmits([
 ])
 
 const email = ref('')
-const email_sent = ref(false)
+const emailSent = ref(false)
 
 const rules = {
     required: (value) => !!value || 'Required.',
@@ -64,7 +64,7 @@ const sendResetEmail = async () => {
         await resetPassword({
             username: email.value
         });
-        email_sent.value = true;
+        emailSent.value = true;
         emit('emailSent', true)
     } catch (e){
         console.error('Error occurred:', e);
