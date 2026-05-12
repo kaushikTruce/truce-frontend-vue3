@@ -19,9 +19,9 @@
     <v-text-field
       prepend-inner-icon="mdi-lock"
       :rules="[rules.required, rules.min]"
-      :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-      @click:append-inner="passwordVisible = !passwordVisible"
-      :type="passwordVisible ? 'password' : 'text'"
+      :append-inner-icon="passwordVisibility ? 'mdi-eye-off' : 'mdi-eye'"
+      @click:append-inner="passwordVisibility = !passwordVisibility"
+      :type="passwordVisibility ? 'password' : 'text'"
       label="Password"
       v-model="password"
       @input="emitPassword"
@@ -54,7 +54,7 @@ const emit = defineEmits([
 
 const email = ref("");
 const password = ref("");
-const passwordVisible = ref(true);
+const passwordVisibility = ref(true);
 
 const rules = {
   required: (value) => !!value || "Required.",
