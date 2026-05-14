@@ -12,7 +12,7 @@
                 :key="i"
                 class="link text-start"
                 style="color: #545454"
-                dense
+                density="compact"
             >
                 <v-col cols="12">
                     <v-icon
