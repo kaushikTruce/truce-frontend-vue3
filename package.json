@@ -13,6 +13,7 @@
     "aws-amplify": "^6.17.0",
     "aws4": "^1.13.2",
     "axios": "^1.16.0",
+    "jsvectormap": "^1.7.0",
     "v-phone-input": "^7.0.0",
     "vue": "^3.5.32",
     "vue-router": "^5.0.6"
