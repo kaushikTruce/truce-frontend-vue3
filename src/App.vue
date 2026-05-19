@@ -27,7 +27,7 @@ function handleThemeChange(isDark) {
 onBeforeMount(() => {
   const darkMode = stateAPI.getStateProperty(null, 'darkMode')
 
-  theme.global.name.value = darkMode ? 'dark' : 'light'
+  theme.change(darkMode ? 'dark' : 'light')
 
   handleThemeChange(darkMode)
 
