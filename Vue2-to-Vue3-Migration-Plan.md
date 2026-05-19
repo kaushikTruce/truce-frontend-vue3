@@ -28,7 +28,7 @@
 The Transparency frontend is a large-scale Vue 2 application requiring migration to Vue 3 for long-term maintainability and performance improvements. The migration involves:
 
 - **60+ Vue components** across components and containers
-- **Complex Vuetify 2 → 3 migration** with breaking changes
+- **Complex Vuetify 2 → 4 migration** with breaking changes
 - **AWS Amplify authentication** integration updates
 - **Custom chart and map integrations** requiring compatibility verification
 - **State management** updates (Vuex 3 → 4 or Pinia)
@@ -60,9 +60,9 @@ frontend/transparency/web/
 ```json
 {
   "vue": "^2.6.11",                    // → Vue 3.4.x
-  "vue-router": "^3.5.1",              // → Vue Router 4.x
+  "vue-router": "^3.5.1",              // → Vue Router 5.x
   "vuex": "^3.6.2",                    // → Vuex 4.x or Pinia
-  "vuetify": "^2.7.2",                 // → Vuetify 3.x
+  "vuetify": "^2.7.2",                 // → Vuetify 4.x
   "vue-template-compiler": "^2.6.11"   // → Remove (built into Vue 3)
 }
 ```
@@ -74,7 +74,7 @@ frontend/transparency/web/
   "@vue/cli-plugin-babel": "~4.5.0",   // → Update to 5.x
   "@vue/cli-plugin-eslint": "~4.5.0",  // → Update to 5.x
   "eslint-plugin-vue": "^6.2.2",       // → Vue 3 compatible version
-  "vue-cli-plugin-vuetify": "~2.1.0"   // → Update for Vuetify 3
+  "vue-cli-plugin-vuetify": "~2.1.0"   // → Update for Vuetify 4
 }
 ```
 
@@ -115,7 +115,7 @@ frontend/transparency/web/
 
 #### Critical Migration Challenges
 
-1. **Vuetify 2 → 3 Breaking Changes**
+1. **Vuetify 2 → 4 Breaking Changes**
    - Component API changes
    - Theme system overhaul
    - Icon system changes
@@ -177,8 +177,8 @@ frontend/transparency/web/
 2. **Install Vue 3 Migration Build**
    ```bash
    npm install @vue/compat
-   npm install vue@^3.4.0
-   npm install vue-router@^4.0.0
+   npm install vue@^3.5.32
+   npm install vue-router@^5.0.6
    npm install vuetify@^4.0.7
    ```
 
@@ -234,7 +234,7 @@ frontend/transparency/web/
      routes: [...]
    })
    
-   // After (Vue Router 4)
+   // After (Vue Router 5)
    import { createRouter, createWebHistory } from 'vue-router'
    
    const router = createRouter({
@@ -254,7 +254,7 @@ frontend/transparency/web/
 3. **Update ESLint configuration**
 4. **Test build process**
 
-### **Phase 3: Vuetify 2 → 3 Migration (5-7 days)**
+### **Phase 3: Vuetify 2 → 4 Migration (5-7 days)**
 
 #### Day 1-2: Vuetify Setup
 1. **Install Vuetify 4**
@@ -539,7 +539,7 @@ frontend/transparency/web/
 - [ ] Test routing functionality
 
 ### **Phase 3: Vuetify Migration**
-- [ ] Install Vuetify 3
+- [ ] Install Vuetify 4
 - [ ] Update plugin configuration
 - [ ] Fix component API changes
 - [ ] Update theme system
@@ -642,8 +642,8 @@ frontend/transparency/web/
 
 #### Official Documentation
 - [Vue 3 Migration Guide](https://v3-migration.vuejs.org/)
-- [Vuetify 3 Migration Guide](https://vuetifyjs.com/en/getting-started/upgrade-guide/)
-- [Vue Router 4 Migration](https://router.vuejs.org/guide/migration/)
+- [Vuetify 4 Migration Guide](https://vuetifyjs.com/en/getting-started/upgrade-guide/)
+- [Vue Router 5 Migration](https://router.vuejs.org/guide/migration/)
 - [Vuex 4 Migration](https://vuex.vuejs.org/guide/migrating-to-4-0-from-3-x.html)
 
 #### Tools and Utilities
@@ -664,7 +664,7 @@ frontend/transparency/web/
    - `v-model` breaking changes
    - Custom directive API changes
 
-3. **Vuetify 3 Changes**
+3. **Vuetify 4 Changes**
    - Component prop changes
    - Theme system overhaul
    - Icon system updates
@@ -703,5 +703,5 @@ For questions or issues during migration:
 
 ---
 
-*Last Updated: August 26, 2025*  
-*Document Version: 1.0*
+*Last Updated: May 19, 2026*  
+*Document Version: 2.0*
