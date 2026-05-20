@@ -18,6 +18,8 @@ import 'vuetify/styles';
 import '@mdi/font/css/materialdesignicons.css';
 import './us-map';
 
+import { createPinia } from 'pinia'
+
 Amplify.configure({
     ...awsconfig,
     API: {
@@ -124,7 +126,9 @@ const router = createRouter({
     routes
 })
 
+const pinia = createPinia()
+
 const vuetify = createVuetify();
 const app = createApp(App);
-app.use(vuetify).use(router);
+app.use(vuetify).use(router).use(pinia);
 app.mount('#app');

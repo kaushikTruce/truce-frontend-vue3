@@ -9,7 +9,7 @@ import { onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useTheme } from 'vuetify'
 
-import * as stateAPI from './stateAPI'
+import { getStateProperty } from './stateAPI'
 
 const route = useRoute()
 const theme = useTheme()
@@ -25,7 +25,7 @@ function handleThemeChange(isDark) {
 }
 
 onBeforeMount(() => {
-  const darkMode = stateAPI.getStateProperty(null, 'darkMode')
+  const darkMode = getStateProperty('darkMode')
 
   theme.change(darkMode ? 'dark' : 'light')
 
