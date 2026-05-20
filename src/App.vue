@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, watch } from 'vue'
+import { onBeforeMount, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useTheme } from 'vuetify'
 
@@ -30,14 +30,47 @@ onBeforeMount(() => {
   theme.change(darkMode ? 'dark' : 'light')
 
   handleThemeChange(darkMode)
-
-  watch(
-    () => theme.global.current.value.dark,
-    (newVal) => {
-      handleThemeChange(newVal)
-    }
-  )
 })
+
+watch(
+  () => theme.global.current.value.dark,
+  (newVal) => {
+    handleThemeChange(newVal)
+  }
+)
+
+// const initializeRB2B = () => {
+//   const reb2b = window.reb2b = window.reb2b || [];
+//   if (reb2b.invoked) return;
+//   reb2b.invoked = true;
+//   reb2b.methods = ["identify", "collect"];
+//   reb2b.factory = (method) => {
+//     return (...args) => {
+//       reb2b.push([method, ...args])
+//       return reb2b
+//     }
+//   }
+
+//   reb2b.methods.forEach(method => {
+//     reb2b[method] = reb2b.factory(method)
+//   });
+
+//   reb2b.load = (key) => {
+//     const script = document.createElement('script')
+//     script.async = true
+//     script.src = `https://s3-us-west-2.amazonaws.com/b2bjsstore/b/${key}/reb2b.js.gz`
+//     document.head.appendChild(script)
+//   }
+
+//   reb2b.SNIPPET_VERSION = '1.0.1'
+//   reb2b.load('4N210HQ70R6Z')
+// }
+
+// onMounted(() => {
+//   initializeRB2B()
+// })
+
+
 </script>
 
 <style>
