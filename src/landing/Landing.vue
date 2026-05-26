@@ -788,7 +788,6 @@ function updateScroll(e) {
 function navigateToApp() {
     router.push({
         name: 'app',
-        // params: { prop_usn: 'Roop Pal', prop_toggle: 'left' }
     });
 }
 
