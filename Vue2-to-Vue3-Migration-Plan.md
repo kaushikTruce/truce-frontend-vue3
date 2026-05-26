@@ -167,19 +167,18 @@ frontend/transparency/web/
    ```json
    {
      "vue": "^3.5.32",
-     "@vue/compat": "^3.4.0",
-     "vue-router": "^5.0.6",
-     "vuex": "^4.0.0",
-     "vuetify": "^4.0.7"
+     "vue-router": "^4.6.4",
+     "vuetify": "^3.12.6",
+     "pinia": "^3.0.4"
    }
    ```
 
 2. **Install Vue 3 Migration Build**
    ```bash
-   npm install @vue/compat
    npm install vue@^3.5.32
-   npm install vue-router@^5.0.6
-   npm install vuetify@^4.0.7
+   npm install vue-router@^4.6.4
+   npm install vuetify@^3.12.6
+   npm install pinia@^3.0.4
    ```
 
 3. **Update Development Dependencies**
@@ -259,7 +258,7 @@ frontend/transparency/web/
 #### Day 1-2: Vuetify Setup
 1. **Install Vuetify 4**
    ```bash
-   npm install vuetify@^4.0.7
+   npm install vuetify@^3.12.6
    npm install @mdi/font
    ```
 
