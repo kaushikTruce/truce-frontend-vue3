@@ -78,24 +78,9 @@ html {
   overflow-y: auto;
 }
 
-/* width */
-html.dark-mode ::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-html.dark-mode ::-webkit-scrollbar-track {
-  background: #272727;
-}
-
-/* Handle */
-html.dark-mode ::-webkit-scrollbar-thumb {
-  background: #3f3f3f;
-}
-
-/* Handle on hover */
-html.dark-mode ::-webkit-scrollbar-thumb:hover {
-  background: #4c4c4c;
+html.dark-mode {
+  scrollbar-color: #3f3f3f #272727;
+  scrollbar-width: thin;
 }
 
 .v-data-table {
