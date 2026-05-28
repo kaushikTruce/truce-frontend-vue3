@@ -290,7 +290,7 @@
       </v-menu>
 
       <template v-else>
-        <v-chip class="truckCostShip pa-0 text-center" color="transparent" disabled style="opacity: 1">
+        <v-chip class="truckCostShip pa-0 text-center" color="transparent" disabled>
           {{ formatDollars(item.avg_cogs) }}
         </v-chip>
       </template>
@@ -474,7 +474,7 @@
             </v-menu>
 
             <template v-else>
-              <v-chip class="truckCostShip pa-0 text-center" color="transparent" disabled style="opacity: 1">
+              <v-chip class="truckCostShip pa-0 text-center" color="transparent" disabled>
                 {{ formatDollars(shipment.cogs) }}
               </v-chip>
             </template>
