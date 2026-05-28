@@ -34,7 +34,22 @@ export const useAppStore = defineStore('app', {
     }
 })
 
-export function setStateProperty(property, value) {
+function normalizeStateArgs(args) {
+    if (args.length === 0) {
+        return [undefined, undefined]
+    }
+
+    // If the first argument is a Vue component or proxy instance (which is an object),
+    // we bypass it and extract the actual state property and/or value.
+    if (typeof args[0] === 'object' && args[0] !== null) {
+        return [args[1], args[2]]
+    }
+
+    return [args[0], args[1]]
+}
+
+export function setStateProperty(...args) {
+    const [property, value] = normalizeStateArgs(args)
     const store = useAppStore()
 
     store.setStateProperty(property, value)
@@ -46,7 +61,8 @@ export function setStateProperty(property, value) {
     }
 }
 
-export function addToStateList(property, value) {
+export function addToStateList(...args) {
+    const [property, value] = normalizeStateArgs(args)
     const store = useAppStore()
 
     store.addToStateList(property, value)
@@ -61,7 +77,8 @@ export function addToStateList(property, value) {
     }
 }
 
-export function getStateProperty(property) {
+export function getStateProperty(...args) {
+    const [property] = normalizeStateArgs(args)
     const store = useAppStore()
 
     if (property in store) {

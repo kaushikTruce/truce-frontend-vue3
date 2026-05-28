@@ -1,135 +1,72 @@
-import axios from 'axios';
-import aws4 from 'aws4';
-import { isProdEnv, isDevEnv } from './utils';
+import {
+    post,
+    put
+} from 'aws-amplify/api';
+import {
+    isDevEnv,
+    isProdEnv
+} from './utils';
 
-export async function getAccountDetails(query_params) {
-    let request;
-
-    const currentUrl = window.location.href;
-
+function getAccountDetailsApiName(queryParams) {
     if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: '77zp494jsb.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://77zp494jsb.execute-api.us-east-1.amazonaws.com/prod/getAccountDetails',
-            data: {
-                query_params: query_params
-            }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'mzar68mml7.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://mzar68mml7.execute-api.us-east-1.amazonaws.com/dev/getAccountDetails',
-            data: {
-                query_params: query_params
-            }
-        };
+        queryParams.is_dev_env = 0;
+        return 'AccountDetailsProd';
     }
 
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
-    });
+    if (isDevEnv()) {
+        queryParams.is_dev_env = 1;
+        return 'AccountDetailsDev';
+    }
 
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    let response = axios(signedRequest).then((result) => {
-        return result;
-    });
-
-    return response;
+    throw new Error('Unable to determine account details API environment');
 }
 
-export async function updateAccountDetails(query_params) {
-    let request;
+async function toAxiosLikeResponse(restOperation) {
+    const response = await restOperation.response;
 
-    const currentUrl = window.location.href;
-
-    if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: '77zp494jsb.execute-api.us-east-1.amazonaws.com',
-            method: 'PUT',
-            url: 'https://77zp494jsb.execute-api.us-east-1.amazonaws.com/prod/updateAccountDetails',
-            data: {
-                query_params: query_params
-            }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'mzar68mml7.execute-api.us-east-1.amazonaws.com',
-            method: 'PUT',
-            url: 'https://mzar68mml7.execute-api.us-east-1.amazonaws.com/dev/updateAccountDetails',
-            data: {
-                query_params: query_params
-            }
-        };
-    }
-
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
-    });
-
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    let response = axios(signedRequest).then((result) => {
-        return result;
-    });
-
-    return response;
+    return {
+        status: response.statusCode,
+        data: await response.body.json(),
+        headers: response.headers
+    };
 }
 
-export async function insertAccountDetails(query_params) {
-    let request;
+function invokeAccountDetails(method, path, queryParams) {
+    const operation = method === 'put' ? put : post;
 
-    const currentUrl = window.location.href;
-
-    if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: '77zp494jsb.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://77zp494jsb.execute-api.us-east-1.amazonaws.com/prod/insertAccountDetails',
-            data: {
-                query_params: query_params
+    return toAxiosLikeResponse(
+        operation({
+            apiName: getAccountDetailsApiName(queryParams),
+            path,
+            options: {
+                body: {
+                    query_params: queryParams
+                }
             }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'mzar68mml7.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://mzar68mml7.execute-api.us-east-1.amazonaws.com/dev/insertAccountDetails',
-            data: {
-                query_params: query_params
-            }
-        };
-    }
+        })
+    );
+}
 
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
-    });
+export async function getAccountDetails(queryParams) {
+    return invokeAccountDetails(
+        'post',
+        '/getAccountDetails',
+        queryParams
+    );
+}
 
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    let response = axios(signedRequest).then((result) => {
-        return result;
-    });
+export async function updateAccountDetails(queryParams) {
+    return invokeAccountDetails(
+        'put',
+        '/updateAccountDetails',
+        queryParams
+    );
+}
 
-    return response;
+export async function insertAccountDetails(queryParams) {
+    return invokeAccountDetails(
+        'post',
+        '/insertAccountDetails',
+        queryParams
+    );
 }

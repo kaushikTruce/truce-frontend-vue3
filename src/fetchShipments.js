@@ -1,95 +1,51 @@
-import axios from 'axios';
-import aws4 from 'aws4';
-import { isProdEnv, isDevEnv } from './utils';
+import { post } from 'aws-amplify/api';
+import {
+    isDevEnv,
+    isProdEnv
+} from './utils';
 
-export async function fetchShipmentData(query_params) {
-    var shipmentsArray;
-    var request;
-
-    const currentUrl = window.location.href;
-
+function getShipmentsApiName(queryParams) {
     if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: 'n0w1ee4mng.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://n0w1ee4mng.execute-api.us-east-1.amazonaws.com/lazy/postShipment',
-            data: {
-                query_params: query_params
-            }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'hv54frdqa1.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://hv54frdqa1.execute-api.us-east-1.amazonaws.com/lazy_dev/postShipment',
-            data: {
-                query_params: query_params
-            }
-        };
+        queryParams.is_dev_env = 0;
+        return 'ShipmentsProd';
     }
 
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
-    });
+    if (isDevEnv()) {
+        queryParams.is_dev_env = 1;
+        return 'ShipmentsDev';
+    }
 
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    signedRequest.headers['Cache-Control'] = 'no-store';
-    signedRequest.headers['Pragma'] = 'no-cache';
-    signedRequest.headers['Expires'] = '0';
-    let response = axios(signedRequest).then((result) => {
-        return result.data.body.records;
-    });
-
-    return response;
+    throw new Error('Unable to determine shipments API environment');
 }
 
-export async function fetchAnalyticsData(query_params) {
-    const currentUrl = window.location.href;
-
-    var request;
-
-    if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: 'n0w1ee4mng.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://n0w1ee4mng.execute-api.us-east-1.amazonaws.com/lazy/postShipment',
-            data: {
-                query_params: query_params
-            }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'hv54frdqa1.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://hv54frdqa1.execute-api.us-east-1.amazonaws.com/lazy_dev/postShipment',
-            data: {
-                query_params: query_params
-            }
-        };
-    }
-
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
+async function fetchShipmentRecords(queryParams, options = {}) {
+    const restOperation = post({
+        apiName: getShipmentsApiName(queryParams),
+        path: '/postShipment',
+        options: {
+            body: {
+                query_params: queryParams
+            },
+            ...options
+        }
     });
 
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    let response = axios(signedRequest).then((result) => {
-        return result.data.body.records;
-    });
+    const response = await restOperation.response;
+    const data = await response.body.json();
 
-    return response;
+    return data.body.records;
+}
+
+export async function fetchShipmentData(queryParams) {
+    return fetchShipmentRecords(queryParams, {
+        headers: {
+            'Cache-Control': 'no-store',
+            Pragma: 'no-cache',
+            Expires: '0'
+        }
+    });
+}
+
+export async function fetchAnalyticsData(queryParams) {
+    return fetchShipmentRecords(queryParams);
 }

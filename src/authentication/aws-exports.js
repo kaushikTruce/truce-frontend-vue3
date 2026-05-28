@@ -1,56 +1,132 @@
-var awsconfig = {
-    // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
-    identityPoolId: 'us-east-1:977ab447-23e4-4445-9d3b-2a0f15057a38',
+import { Amplify } from 'aws-amplify';
 
-    // REQUIRED - Amazon Cognito Region
-    region: 'us-east-1',
+export const AUTH_FLOW_TYPE = 'USER_PASSWORD_AUTH';
 
-    // OPTIONAL - Amazon Cognito Federated Identity Pool Region
-    // Required only if it's different from Amazon Cognito Region
-    // identityPoolRegion: 'XX-XXXX-X',
-
-    // OPTIONAL - Amazon Cognito User Pool ID
-    userPoolId: 'us-east-1_PJgJ5RUP8',
-
-    // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
-    userPoolWebClientId: '20ecjtv2a9goqcjh2kvuj1u4i3',
-
-    // OPTIONAL - Enforce user authentication prior to accessing AWS resources or not
-    mandatorySignIn: true,
-
-    // OPTIONAL - Configuration for cookie storage
-    // Note: if the secure flag is set to true, then the cookie transmission requires a secure protocol
-    /*cookieStorage: {
-        // REQUIRED - Cookie domain (only required if cookieStorage is provided)
-        domain: '.yourdomain.com',
-        // OPTIONAL - Cookie path
-        path: '/',
-        // OPTIONAL - Cookie expiration in days
-        expires: 365,
-        // OPTIONAL - See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
-        sameSite: "strict" | "lax",
-        // OPTIONAL - Cookie secure flag
-        // Either true or false, indicating if the cookie transmission requires a secure protocol (https).
-        secure: true
-    },*/
-
-    // OPTIONAL - customized storage object
-    // storage: MyStorage,
-
-    // OPTIONAL - Manually set the authentication flow type. Default is 'USER_SRP_AUTH'
-    authenticationFlowType: 'USER_PASSWORD_AUTH'
-
-    // OPTIONAL - Manually set key value pairs that can be passed to Cognito Lambda Triggers
-    //clientMetadata: { myCustomKey: 'myCustomValue' },
-
-    // OPTIONAL - Hosted UI configuration
-    // oauth: {
-    //     domain: 'truce-okta.auth.us-east-1.amazoncognito.com',
-    //     scope: ['email', 'openid', 'aws.cognito.signin.user.admin', 'profile'],
-    //     redirectSignIn: 'http://localhost:8080/app/brokerDashboard',
-    //     redirectSignOut: 'http://localhost:8080/app',
-    //     responseType: 'token'
-    // }
+const defaultAuthConfig = {
+    Auth: {
+        Cognito: {
+            identityPoolId:
+                'us-east-1:977ab447-23e4-4445-9d3b-2a0f15057a38',
+            userPoolId: 'us-east-1_PJgJ5RUP8',
+            userPoolClientId:
+                '20ecjtv2a9goqcjh2kvuj1u4i3',
+            loginWith: {
+                email: true
+            },
+            signUpVerificationMethod: 'code',
+            allowGuestAccess: false
+        }
+    }
 };
 
-export default awsconfig;
+const oktaAuthConfig = {
+    Auth: {
+        Cognito: {
+            identityPoolId:
+                'us-east-1:2531f0b0-d583-4e88-8696-149fa59f7199',
+            userPoolId: 'us-east-1_QRIwhgq8L',
+            userPoolClientId:
+                '2lesvpgr39vk8nnk27te9rt8ee',
+            loginWith: {
+                oauth: {
+                    domain:
+                        'truce-okta.auth.us-east-1.amazoncognito.com',
+                    scopes: [
+                        'email',
+                        'openid',
+                        'aws.cognito.signin.user.admin',
+                        'profile'
+                    ],
+                    redirectSignIn: [
+                        'https://www.truce.io/app'
+                    ],
+                    redirectSignOut: [
+                        'https://www.truce.io/app?provider=reyesHoldingsOkta'
+                    ],
+                    responseType: 'token'
+                }
+            },
+            allowGuestAccess: false
+        }
+    }
+};
+
+const sharedResourceConfig = {
+    API: {
+        REST: {
+            SBUAccess: {
+                endpoint:
+                    'https://llvtzheyh4.execute-api.us-east-1.amazonaws.com/prod',
+                region: 'us-east-1'
+            },
+            Contact: {
+                endpoint:
+                    'https://gkiuzzt1h8.execute-api.us-east-1.amazonaws.com/contactTest',
+                region: 'us-east-1'
+            },
+            ResendTempPassword: {
+                endpoint:
+                    'https://jzbd0kolh3.execute-api.us-east-1.amazonaws.com/dev',
+                region: 'us-east-1'
+            },
+            AccountDetailsProd: {
+                endpoint:
+                    'https://77zp494jsb.execute-api.us-east-1.amazonaws.com/prod',
+                region: 'us-east-1'
+            },
+            AccountDetailsDev: {
+                endpoint:
+                    'https://mzar68mml7.execute-api.us-east-1.amazonaws.com/dev',
+                region: 'us-east-1'
+            },
+            ShipmentsProd: {
+                endpoint:
+                    'https://n0w1ee4mng.execute-api.us-east-1.amazonaws.com/lazy',
+                region: 'us-east-1'
+            },
+            ShipmentsDev: {
+                endpoint:
+                    'https://hv54frdqa1.execute-api.us-east-1.amazonaws.com/lazy_dev',
+                region: 'us-east-1'
+            },
+            NotificationsProd: {
+                endpoint:
+                    'https://hz9ylqv3we.execute-api.us-east-1.amazonaws.com/prod-1',
+                region: 'us-east-1'
+            },
+            NotificationsDev: {
+                endpoint:
+                    'https://ij1yddlun5.execute-api.us-east-1.amazonaws.com/dev-1',
+                region: 'us-east-1'
+            },
+            UserAnalytics: {
+                endpoint:
+                    'https://h4fiko3zph.execute-api.us-east-1.amazonaws.com/ua-2',
+                region: 'us-east-1'
+            }
+        }
+    },
+    Storage: {
+        S3: {
+            bucket: 'broker-data-upload',
+            region: 'us-east-1'
+        }
+    }
+};
+
+export function getAmplifyConfig(authConfig = defaultAuthConfig) {
+    return {
+        ...authConfig,
+        ...sharedResourceConfig
+    };
+}
+
+export function configureAmplify(authConfig = defaultAuthConfig) {
+    Amplify.configure(getAmplifyConfig(authConfig));
+}
+
+export function configureAmplifyForOkta() {
+    configureAmplify(oktaAuthConfig);
+}
+
+export default getAmplifyConfig();

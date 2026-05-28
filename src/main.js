@@ -1,15 +1,17 @@
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
-import { Amplify } from 'aws-amplify';
 import {
     fetchAuthSession,
+    fetchUserAttributes,
     getCurrentUser,
     signOut
 } from 'aws-amplify/auth';
-import awsconfig from './authentication/aws-exports';
+import { configureAmplify } from './authentication/aws-exports';
 
 import Landing from './landing/Landing.vue';
+import Login from './containers/Login.vue';
+import ShipperDashboard from './containers/ShipperDashboard.vue';
 import App from './App.vue';
 
 import { createVuetify } from 'vuetify';
@@ -20,31 +22,7 @@ import './us-map';
 
 import { createPinia } from 'pinia'
 
-Amplify.configure({
-    ...awsconfig,
-    API: {
-        REST: {
-            SBUAccess: {
-                endpoint: 'https://llvtzheyh4.execute-api.us-east-1.amazonaws.com/prod'
-            },
-
-            Contact: {
-                endpoint: 'https://gkiuzzt1h8.execute-api.us-east-1.amazonaws.com/contactTest'
-            },
-
-            ResendTempPassword: {
-                endpoint: 'https://jzbd0kolh3.execute-api.us-east-1.amazonaws.com/dev'
-            }
-        }
-    },
-
-    Storage: {
-        S3: {
-            bucket: 'broker-data-upload',
-            region: 'us-east-1'
-        }
-    }
-});
+configureAmplify();
 
 const guard = async (to) => {
     if (to.query.skipGuard){
@@ -106,8 +84,6 @@ const routes = [
         component: Landing,
 
             beforeEnter: () => {
-                console.log('landing beforeEnter:', { href: window.location.href });
-
                 if (window.location.href.includes('app.truce-dev.com')) {
                     window.location.href = 'https://truce-dev.com';
                     return false;
@@ -118,6 +94,58 @@ const routes = [
                     return true;
                 }
             }
+    },
+    {
+        name: 'app',
+        path: '/app',
+        redirect: '/app/login'
+    },
+
+    {
+        name: 'login',
+        path: '/app/login',
+        component: Login,
+
+        beforeEnter: async () => {
+            try {
+                const user = await getCurrentUser();
+
+                if (user) {
+                    const attributes =
+                        await fetchUserAttributes();
+
+                    const role =
+                        attributes?.['custom:role'];
+
+                    const dashboardPath =
+                        role === 'shipper'
+                            ? '/app/brokerDashboard'
+                            : '/app/shipperDashboard';
+
+                    return {
+                        path: dashboardPath
+                    };
+                }
+
+                return true;
+            } catch (error) {
+                return true;
+            }
+        }
+    },
+    {
+        name: 'broker-dashboard',
+        path: '/app/brokerDashboard',
+        component: ShipperDashboard,
+        props: true,
+        beforeEnter: guard
+    },
+    {
+        name: 'shipper-dashboard',
+        path: '/app/shipperDashboard',
+        component: ShipperDashboard,
+        props: true,
+        beforeEnter: guard
     },
 ];
 

@@ -1,279 +1,101 @@
-import axios from 'axios';
-import aws4 from 'aws4';
-import { isProdEnv, isDevEnv } from './utils';
+import {
+    post,
+    put
+} from 'aws-amplify/api';
+import {
+    isDevEnv,
+    isProdEnv
+} from './utils';
 
-export async function getNotifications(query_params) {
-    let request;
-
-    const currentUrl = window.location.href;
-
+function getNotificationsApiName(queryParams) {
     if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: 'hz9ylqv3we.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://hz9ylqv3we.execute-api.us-east-1.amazonaws.com/prod-1/getNotification',
-            data: {
-                query_params: query_params
-            }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'ij1yddlun5.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://ij1yddlun5.execute-api.us-east-1.amazonaws.com/dev-1/getNotification',
-            data: {
-                query_params: query_params
-            }
-        };
+        queryParams.is_dev_env = 0;
+        return 'NotificationsProd';
     }
 
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
-    });
+    if (isDevEnv()) {
+        queryParams.is_dev_env = 1;
+        return 'NotificationsDev';
+    }
 
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    let response = axios(signedRequest).then((result) => {
-        return result.data.records;
-    });
-
-    return response;
+    throw new Error('Unable to determine notifications API environment');
 }
 
-export async function updateNotification(query_params) {
-    let request;
-
-    const currentUrl = window.location.href;
-
-    if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: 'hz9ylqv3we.execute-api.us-east-1.amazonaws.com',
-            method: 'PUT',
-            url: 'https://hz9ylqv3we.execute-api.us-east-1.amazonaws.com/prod-1/updateNotificationStatus',
-            data: {
-                query_params: query_params
+async function invokeNotification(
+    method,
+    path,
+    queryParams,
+    fallback = null
+) {
+    const operation = method === 'put' ? put : post;
+    const restOperation = operation({
+        apiName: getNotificationsApiName(queryParams),
+        path,
+        options: {
+            body: {
+                query_params: queryParams
             }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'ij1yddlun5.execute-api.us-east-1.amazonaws.com',
-            method: 'PUT',
-            url: 'https://ij1yddlun5.execute-api.us-east-1.amazonaws.com/dev-1/updateNotificationStatus',
-            data: {
-                query_params: query_params
-            }
-        };
-    }
-
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
-    });
-
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    let response = axios(signedRequest).then((result) => {
-        return result.data.records;
-    });
-
-    return response;
-}
-
-export async function getSubscriptionStatus(query_params) {
-    let request;
-
-    const currentUrl = window.location.href;
-
-    if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: 'hz9ylqv3we.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://hz9ylqv3we.execute-api.us-east-1.amazonaws.com/prod-1/getSubscriptionStatus',
-            data: {
-                query_params: query_params
-            }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'ij1yddlun5.execute-api.us-east-1.amazonaws.com',
-            method: 'POST',
-            url: 'https://ij1yddlun5.execute-api.us-east-1.amazonaws.com/dev-1/getSubscriptionStatus',
-            data: {
-                query_params: query_params
-            }
-        };
-    }
-
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
-    });
-
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    let response = axios(signedRequest).then((result) => {
-        if (result.data == null) {
-            return [];
         }
-        return result.data;
     });
 
-    return response;
+    const response = await restOperation.response;
+    const data = await response.body.json();
+
+    return data == null ? fallback : data;
 }
 
-export async function updateSubscriptionStatus(query_params) {
-    let request;
+export async function getNotifications(queryParams) {
+    const data = await invokeNotification(
+        'post',
+        '/getNotification',
+        queryParams
+    );
 
-    const currentUrl = window.location.href;
-
-    if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: 'hz9ylqv3we.execute-api.us-east-1.amazonaws.com',
-            method: 'PUT',
-            url: 'https://hz9ylqv3we.execute-api.us-east-1.amazonaws.com/prod-1/updateSubscriptionStatus',
-            data: {
-                query_params: query_params
-            }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'ij1yddlun5.execute-api.us-east-1.amazonaws.com',
-            method: 'PUT',
-            url: 'https://ij1yddlun5.execute-api.us-east-1.amazonaws.com/dev-1/updateSubscriptionStatus',
-            data: {
-                query_params: query_params
-            }
-        };
-    }
-
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
-    });
-
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    let response = axios(signedRequest).then((result) => {
-        if (result.data == null) {
-            return [];
-        }
-        return result.data;
-    });
-
-    return response;
+    return data.records;
 }
 
-export async function createNewSubscriber(query_params) {
-    let request;
+export async function updateNotification(queryParams) {
+    const data = await invokeNotification(
+        'put',
+        '/updateNotificationStatus',
+        queryParams
+    );
 
-    const currentUrl = window.location.href;
-
-    if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: 'hz9ylqv3we.execute-api.us-east-1.amazonaws.com',
-            method: 'PUT',
-            url: 'https://hz9ylqv3we.execute-api.us-east-1.amazonaws.com/prod-1/createNewSubscriber',
-            data: {
-                query_params: query_params
-            }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'ij1yddlun5.execute-api.us-east-1.amazonaws.com',
-            method: 'PUT',
-            url: 'https://ij1yddlun5.execute-api.us-east-1.amazonaws.com/dev-1/createNewSubscriber',
-            data: {
-                query_params: query_params
-            }
-        };
-    }
-
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
-    });
-
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    let response = axios(signedRequest).then((result) => {
-        if (result.data == null) {
-            return [];
-        }
-        return result.data;
-    });
-
-    return response;
+    return data.records;
 }
 
-export async function updateSubscriptionFrequency(query_params) {
-    let request;
+export async function getSubscriptionStatus(queryParams) {
+    return invokeNotification(
+        'post',
+        '/getSubscriptionStatus',
+        queryParams,
+        []
+    );
+}
 
-    const currentUrl = window.location.href;
+export async function updateSubscriptionStatus(queryParams) {
+    return invokeNotification(
+        'put',
+        '/updateSubscriptionStatus',
+        queryParams,
+        []
+    );
+}
 
-    if (isProdEnv()) {
-        query_params.is_dev_env = 0;
-        request = {
-            host: 'hz9ylqv3we.execute-api.us-east-1.amazonaws.com',
-            method: 'PUT',
-            url: 'https://hz9ylqv3we.execute-api.us-east-1.amazonaws.com/prod-1/updateSubscriptionFrequency',
-            data: {
-                query_params: query_params
-            }
-        };
-    } else if (isDevEnv()) {
-        query_params.is_dev_env = 1;
-        request = {
-            host: 'ij1yddlun5.execute-api.us-east-1.amazonaws.com',
-            method: 'PUT',
-            url: 'https://ij1yddlun5.execute-api.us-east-1.amazonaws.com/dev-1/updateSubscriptionFrequency',
-            data: {
-                query_params: query_params
-            }
-        };
-    }
+export async function createNewSubscriber(queryParams) {
+    return invokeNotification(
+        'put',
+        '/createNewSubscriber',
+        queryParams,
+        []
+    );
+}
 
-    let signedRequest = aws4.sign(request, {
-        // assumes user has authenticated and we have called
-        // AWS.config.credentials.get to retrieve keys and
-        // session tokens
-        secretAccessKey: '',
-        accessKeyId: ''
-    });
-
-    delete signedRequest.headers['Host'];
-    delete signedRequest.headers['Content-Length'];
-    let response = axios(signedRequest).then((result) => {
-        if (result.data == null) {
-            return [];
-        }
-        return result.data;
-    });
-
-    return response;
+export async function updateSubscriptionFrequency(queryParams) {
+    return invokeNotification(
+        'put',
+        '/updateSubscriptionFrequency',
+        queryParams,
+        []
+    );
 }
