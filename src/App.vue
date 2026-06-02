@@ -79,7 +79,7 @@ html {
 }
 
 html.dark-mode {
-  scrollbar-color: #3f3f3f #272727;
+  scrollbar-color: #3f3f3f;
   scrollbar-width: thin;
 }
 
