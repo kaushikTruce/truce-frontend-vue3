@@ -14,7 +14,7 @@ import Login from './containers/Login.vue';
 import ShipperDashboard from './containers/ShipperDashboard.vue';
 import App from './App.vue';
 
-import { createVuetify } from 'vuetify';
+import vuetify from './plugins/vuetify'
 import 'vuetify/styles';
 
 import '@mdi/font/css/materialdesignicons.css';
@@ -156,7 +156,6 @@ const router = createRouter({
 
 const pinia = createPinia()
 
-const vuetify = createVuetify();
 const app = createApp(App);
 app.use(vuetify).use(router).use(pinia);
 app.mount('#app');

@@ -235,6 +235,7 @@ import {
     getCurrentInstance
 } from 'vue';
 import { useRouter } from 'vue-router';
+import { useTheme } from 'vuetify';
 import {
     signIn as amplifySignIn,
     getCurrentUser,
@@ -269,6 +270,7 @@ defineOptions({
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
+const vuetifyTheme = useTheme();
 const cards = ref([
     'initial',
     'signup',
@@ -321,7 +323,8 @@ const is_admin = ref(false);
 const cognitoUser = ref(null);
 
 const theme = computed(() => {
-    return proxy.$vuetify.theme.dark ? 'dark' : 'light';
+    const dm = stateAPI.getStateProperty('darkMode') ?? stateAPI.getStateProperty('isDarkMode') ?? false;
+    return dm ? 'dark' : 'light';
 });
 
 onBeforeMount(async () => {
@@ -758,39 +761,24 @@ async function navigate() {
             .then((result) => {
                 let parsedData = null;
 
-                if (
-                    result !== undefined &&
-                    result.status === 200
-                ) {
-                    parsedData = JSON.parse(
-                        result.data.records[0]
-                            .config
-                    );
+                if (result !== undefined && result.status === 200) {
+                    const cfg = result.data.records[0].config;
+                    try {
+                        parsedData = typeof cfg === 'string' ? JSON.parse(cfg) : cfg;
+                    } catch (e) {
+                        console.warn('Login: failed to parse config, using raw value', e);
+                        parsedData = null;
+                    }
                 }
 
-                if (
-                    parsedData != null &&
-                    parsedData.darkMode !=
-                        null
-                ) {
-                    stateAPI.setStateProperty(
-                        proxy,
-                        'darkMode',
-                        parsedData.darkMode
-                    );
-                } else {
-                    stateAPI.setStateProperty(
-                        proxy,
-                        'darkMode',
-                        false
-                    );
-                }
+                const dm = parsedData?.darkMode ?? false;
+                stateAPI.setStateProperty(proxy, 'darkMode', dm);
 
-                proxy.$vuetify.theme.dark =
-                    stateAPI.getStateProperty(
-                        proxy,
-                        'darkMode'
-                    );
+                try {
+                    vuetifyTheme.change(dm ? 'dark' : 'light')
+                } catch (e) {
+                    console.warn('Could not set Vuetify theme in Login.vue', e);
+                }
             });
 
         stateAPI.setStateProperty(
@@ -927,37 +915,16 @@ async function navigate() {
             ) {
                 router.push({
                     name: 'broker-dashboard',
-
-                    params: {
-                        prop_usn:
-                            'Roop Pal',
-
-                        prop_toggle:
-                            'left'
-                    },
-
                     query: {
-                        skipGuard:
-                            skipGuard.value
-                    }
+                        skipGuard: skipGuard.value,
+                    },
                 });
             } else {
                 router.push({
-                    name:
-                        'shipper-dashboard',
-
-                    params: {
-                        prop_usn:
-                            'Roop Pal',
-
-                        prop_toggle:
-                            'left'
-                    },
-
+                    name: 'shipper-dashboard',
                     query: {
-                        skipGuard:
-                            skipGuard.value
-                    }
+                        skipGuard: skipGuard.value,
+                    },
                 });
             }
         }

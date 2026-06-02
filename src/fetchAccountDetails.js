@@ -24,9 +24,21 @@ function getAccountDetailsApiName(queryParams) {
 async function toAxiosLikeResponse(restOperation) {
     const response = await restOperation.response;
 
+    // Attempt to parse JSON response body, fall back to text when not JSON
+    let data = null;
+    try {
+        data = await response.body.json();
+    } catch (err) {
+        try {
+            data = await response.body.text();
+        } catch (err2) {
+            data = null;
+        }
+    }
+
     return {
         status: response.statusCode,
-        data: await response.body.json(),
+        data,
         headers: response.headers
     };
 }

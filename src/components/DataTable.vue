@@ -887,26 +887,34 @@ async function updateFavoriteLanes(item) {
   store.setFavoriteLanes(lanes)
 
   // Persist to backend
-  try {
-    const result = await fetchAccountDetails.getAccountDetails({ email: email.value })
-    let tempConfig = { favoriteLanes: lanes }
+    try {
+      const result = await fetchAccountDetails.getAccountDetails({ email: email.value })
+      let tempConfig = { favoriteLanes: lanes }
 
-    if (result?.status === 200) {
-      const data = JSON.parse(result.data.records[0].config)
-      if (data) {
-        data.favoriteLanes = lanes
-        tempConfig = cloneDeep(data)
+      if (result?.status === 200) {
+        const cfg = result.data.records[0].config
+        let data = null
+        try {
+          data = typeof cfg === 'string' ? JSON.parse(cfg) : cfg
+        } catch (e) {
+          console.warn('[DataTable] failed to parse config, using fallback', e)
+          data = null
+        }
+
+        if (data) {
+          data.favoriteLanes = lanes
+          tempConfig = cloneDeep(data)
+        }
       }
-    }
 
-    await fetchAccountDetails.updateAccountDetails({
-      email: email.value,
-      config: 1,
-      new_config: JSON.stringify(tempConfig),
-    })
-  } catch (err) {
-    console.error('[DataTable] updateFavoriteLanes error:', err)
-  }
+      await fetchAccountDetails.updateAccountDetails({
+        email: email.value,
+        config: 1,
+        new_config: JSON.stringify(tempConfig),
+      })
+    } catch (err) {
+      console.error('[DataTable] updateFavoriteLanes error:', err)
+    }
 }
 </script>
 

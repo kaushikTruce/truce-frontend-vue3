@@ -26,7 +26,9 @@ export default createVuetify({
                 colors: {
                     background: '#f5f8ff',
                     navbar: '#0091ff',
-                    sidebarBackground: '#ffffff'
+                    sidebarBackground: '#ffffff',
+                    iconColor: '#ffffff',
+                    sideBar: '#717171'
                 }
             },
 
@@ -36,8 +38,9 @@ export default createVuetify({
                 colors: {
                     background: '#181818',
                     navbar: '#121212',
-                    iconColor: '#D9D9D9',
-                    sidebarBackground: '#1A1A1A'
+                    iconColor: '#d9d9d9',
+                    sidebarBackground: '#1A1A1A',
+                    sideBar: '#d9d9d9'
                 }
             }
         }
@@ -48,9 +51,7 @@ export default createVuetify({
 
         aliases: {
             ...aliases,
-
             calc: CalculatorIcon,
-            calcSidebar: CalculatorIconSidebar
         },
 
         sets: {

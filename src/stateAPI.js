@@ -4,12 +4,56 @@ export const useAppStore = defineStore('app', {
     state: () => ({
         brokerList: [],
         shipperList: [],
-        laneList: []
+        laneList: [],
+        isDarkMode: (() => {
+            try {
+                const raw = localStorage.getItem('isDarkMode') || localStorage.getItem('darkMode')
+                return raw ? JSON.parse(raw) : false
+            } catch (e) {
+                return false
+            }
+        })(),
+        darkMode: (() => {
+            try {
+                const raw = localStorage.getItem('darkMode') || localStorage.getItem('isDarkMode')
+                return raw ? JSON.parse(raw) : false
+            } catch (e) {
+                return false
+            }
+        })(),
+        username: (() => {
+            try {
+                const raw = localStorage.getItem('username')
+                return raw ? JSON.parse(raw) : ''
+            } catch (e) {
+                return ''
+            }
+        })(),
+        email: (() => {
+            try {
+                const raw = localStorage.getItem('email')
+                return raw ? JSON.parse(raw) : ''
+            } catch (e) {
+                return ''
+            }
+        })()
     }),
 
     actions: {
         setStateProperty(property, value) {
             this[property] = value
+        },
+
+        setDarkMode(value) {
+            this.isDarkMode = value
+            this.darkMode = value
+
+            try {
+                localStorage.setItem('isDarkMode', JSON.stringify(value))
+                localStorage.setItem('darkMode', JSON.stringify(value))
+            } catch (e) {
+                console.error(e)
+            }
         },
 
         addToStateList(property, value) {

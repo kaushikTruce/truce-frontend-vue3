@@ -54,18 +54,15 @@ export function getColor(score) {
         return '#BDBDBD';
     }
 
-    const scoreInt = parseFloat(score).toFixed(0);
+    const scoreInt = Number(parseFloat(score).toFixed(0));
 
-    const isDarkMode = this.$vuetify.theme.dark;
+    // Vuetify 3 theme access isn't available here; use persisted store value instead
+    const isDarkMode = stateAPI.getStateProperty('isDarkMode') || false;
 
-    if (scoreInt > 89)
-        return isDarkMode ? 'rgba(42, 192, 142, 0.75)' : '#2AC08E';
-    else if (89 >= scoreInt && scoreInt > 79)
-        return isDarkMode ? 'rgba(26, 171, 255, 0.8)' : '#1AABFF';
-    else if (79 >= scoreInt && scoreInt > 69)
-        return isDarkMode ? 'rgba(255, 171, 108, 0.75)' : '#FFAB6C';
-    else if (69 >= scoreInt && scoreInt > -1)
-        return isDarkMode ? 'rgba(242, 55, 86, 1)' : '#F23756';
+    if (scoreInt > 89) return isDarkMode ? 'rgba(42, 192, 142, 0.75)' : '#2AC08E';
+    if (scoreInt > 79) return isDarkMode ? 'rgba(26, 171, 255, 0.8)' : '#1AABFF';
+    if (scoreInt > 69) return isDarkMode ? 'rgba(255, 171, 108, 0.75)' : '#FFAB6C';
+    if (scoreInt > -1) return isDarkMode ? 'rgba(242, 55, 86, 1)' : '#F23756';
     else return '#BDBDBD';
 }
 

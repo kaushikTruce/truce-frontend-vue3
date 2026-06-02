@@ -2,7 +2,7 @@
     <v-navigation-drawer
         expand-on-hover
         rail
-        :rail-width="43"
+        :rail-width="55"
         class="pt-4"
         :color="sidebarBackground"
     >
@@ -17,9 +17,10 @@
                 @click="menuActionClick(item.action)"
             >
                 <template #prepend>
-                    <v-icon :color="iconColor">
-                        {{ item.icon }}
-                    </v-icon>
+                    <v-icon 
+                        :icon="item.icon"
+                        :color="iconColor"
+                    />
                 </template>
                 
                 <v-list-item-title>
@@ -41,9 +42,10 @@
                     @click="menuActionClick(item.action)"
                 >
                     <template #prepend>
-                        <v-icon :color="iconColor">
-                            {{ item.color }}                            
-                        </v-icon>
+                        <v-icon 
+                            :color="iconColor"
+                            :icon="item.icon"
+                        />
                     </template>
 
                     <v-list-item-title>
@@ -66,6 +68,7 @@
 <script setup>
 import * as stateAPI from '../stateAPI'
 import Export from '../components/Export.vue'
+import calcSidebar from '../components/icons/CalculatorIconSidebar.vue'
 import { useRoute, useRouter } from 'vue-router';
 import { useTheme } from 'vuetify';
 import { computed, ref } from 'vue';
@@ -115,7 +118,7 @@ const navItems = [
         enabled: true
     },
     {
-        icon: '$calcSidebar',
+        icon: calcSidebar,
         text: 'Pricing Calculator',
         action: 'calculator',
         enabled: stateAPI.getStateProperty('calc_enabled')
@@ -167,7 +170,7 @@ const sidebarBackground = computed(() => {
 
 const iconColor = computed(() => {
     const currentTheme = theme.global.current.value
-    return currentTheme.colors.iconColor
+    return currentTheme.colors.sideBar
 })
 
 function menuActionClick(action) {

@@ -1,6 +1,6 @@
 <template>
     <v-app-bar
-        :color="appStore.isDarkMode ? 'surface' : 'navbar'"
+        :color="'navbar'"
         density="compact"
         clipped-left
         flat
@@ -11,7 +11,7 @@
                 alt="Truce Logo"
                 class="shrink mr-2"
                 contain
-                src="../assets/Truce_Logo.png"
+                :src="Truce_Logo"
                 width="120"
             />
         </div>
@@ -35,7 +35,7 @@
                         color="error"
                         :model-value="newNotifs.length > 0"
                     >
-                        <v-icon color="iconColor">mdi-bell</v-icon>
+                        <v-icon :color="iconColor">mdi-bell</v-icon>
                     </v-badge>
                 </v-btn>
             </template>
@@ -62,7 +62,7 @@
  
                             <v-list-item v-else :key="item.subject">
                                 <template #prepend>
-                                    <v-icon color="blue-darken-4">
+                                    <v-icon :color="iconColor">
                                         mdi-bell
                                     </v-icon>
                                 </template>
@@ -122,15 +122,15 @@
                     v-bind="menuProps"
                 >
                     <span class="mr-2 text-iconColor">{{ username }}</span>
-                    <v-avatar size="35">
-                        <v-icon size="32" color="iconColor">
+                    <v-avatar size="35" :color="isDarkMode ? 'black' : 'blue'">
+                        <v-icon size="32" :color="isDarkMode ? 'white' : 'white'">
                             mdi-account-circle
                         </v-icon>
                     </v-avatar>
                 </v-btn>
             </template>
  
-            <v-card elevation="0" rounded max-width="300">
+            <v-card elevation="4" rounded max-width="300">
                 <v-list border="t">
                     <!-- Dark Mode Toggle -->
                     <v-list-item>
@@ -140,7 +140,7 @@
                             color="primary"
                             hide-details
                             density="compact"
-                            class="darkModeSwitch"
+                            class="darkModeSwitch ml-2"
                             @update:model-value="toggleDarkMode"
                         />
                     </v-list-item>
@@ -151,11 +151,11 @@
                         @click="item.func"
                     >
                         <template #prepend>
-                            <v-icon color="iconColor" class="mr-2">
+                            <v-icon class="mr-2">
                                 {{ item.icon }}
                             </v-icon>
                         </template>
-                        <v-list-item-title class="text-iconColor">
+                        <v-list-item-title class="black">
                             {{ item.title }}
                         </v-list-item-title>
                     </v-list-item>
@@ -174,6 +174,8 @@ import { signOut } from 'aws-amplify/auth';
 import * as fetchAccountDetails from '../fetchAccountDetails';
 import * as fetchNotifications from '../fetchNotifications';
 import SearchBar from './Search.vue';
+import Truce_Logo from "../assets/Truce_Logo.png"
+import { blue } from 'vuetify/util/colors';
 
 
 const appStore = useAppStore();
@@ -189,6 +191,15 @@ const curConfig = ref(null);
 // Derived from state (safe access when store may not have these properties yet)
 const username = computed(() => appStore.username ?? '');
 const email = computed(() => appStore.email ?? '');
+
+const iconColor = computed(() => {
+    try {
+        const currentTheme = vuetifyTheme.global.current.value
+        return currentTheme?.colors?.iconColor ?? undefined
+    } catch (e) {
+        return undefined
+    }
+})
 
 const handleSignOut = async () => {
     try {
@@ -231,9 +242,31 @@ const getCurrentConfig = async () => {
         if (result?.status === 200) {
             const configStr = result?.data?.records?.[0]?.config;
             if (configStr) {
-                curConfig.value = JSON.parse(configStr);
+                // configStr might already be an object or a JSON string; handle both safely
+                try {
+                    curConfig.value =
+                        typeof configStr === 'string'
+                            ? JSON.parse(configStr)
+                            : configStr
+                } catch (e) {
+                    console.warn('Could not parse config JSON, using raw value', e)
+                    curConfig.value = null
+                }
             }
-            isDarkMode.value = curConfig.value?.darkMode ?? false;
+
+            // Determine dark mode preference: server config takes precedence
+            const serverPref = curConfig.value?.darkMode
+            if (serverPref !== undefined) {
+                isDarkMode.value = serverPref
+            }
+
+            // Sync store and Vuetify theme
+            appStore.setDarkMode(isDarkMode.value)
+            try {
+                vuetifyTheme.change(isDarkMode.value ? 'dark' : 'light')
+            } catch (e) {
+                console.warn('Failed to apply Vuetify theme via global.name, falling back', e)
+            }
         }
     } catch (err) {
         console.error('Failed to fetch config:', err);
@@ -243,7 +276,12 @@ const getCurrentConfig = async () => {
 const toggleDarkMode = async (value) => {
     isDarkMode.value = value;
     appStore.setDarkMode(value);
-    vuetifyTheme.global.name.value = value ? 'dark' : 'light';
+    // Use Vuetify global theme API
+    try {
+        vuetifyTheme.change(value ? 'dark' : 'light')
+    } catch (e) {
+        console.warn('Failed to change Vuetify theme:', e)
+    }
  
     if (!curConfig.value) return
     
@@ -264,6 +302,14 @@ const toggleDarkMode = async (value) => {
 
 
 onBeforeMount(async () => {
+    // Initialize theme from store (which may have been restored from localStorage)
+    isDarkMode.value = appStore.isDarkMode ?? isDarkMode.value
+    try {
+        vuetifyTheme.change(isDarkMode.value ? 'dark' : 'light')
+    } catch (e) {
+        console.error(e)
+    }
+
     await getCurrentConfig();
 })
 

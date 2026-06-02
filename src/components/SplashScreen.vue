@@ -2,7 +2,6 @@
   <div v-if="isLoading">
     <v-overlay
       :model-value="true"
-      opacity="0.6"
       class="align-center justify-center"
       contained
     >
