@@ -169,12 +169,11 @@
 import { useRouter } from 'vue-router';
 import { useAppStore } from '../stateAPI';
 import { useTheme } from 'vuetify';
-import { onBeforeMount, onMounted, ref } from 'vue';
+import { onBeforeMount, onMounted, ref, computed } from 'vue';
 import { signOut } from 'aws-amplify/auth';
 import * as fetchAccountDetails from '../fetchAccountDetails';
 import * as fetchNotifications from '../fetchNotifications';
 import SearchBar from './Search.vue';
-import { storeToRefs } from 'pinia';
 
 
 const appStore = useAppStore();
@@ -187,13 +186,9 @@ const newNotifs = ref([]);
 const isDarkMode = ref(false);
 const curConfig = ref(null);
 
-// Derived from state
-const { username, email } = storeToRefs(appStore);
-
-const menuItems = [
-    { title: 'Account', icon: 'mdi-account', func: goToAccount },
-    { title: 'Sign Out', icon: 'mdi-logout', func: handleSignOut },
-];
+// Derived from state (safe access when store may not have these properties yet)
+const username = computed(() => appStore.username ?? '');
+const email = computed(() => appStore.email ?? '');
 
 const handleSignOut = async () => {
     try {
@@ -209,18 +204,25 @@ const handleSignOut = async () => {
 const goToAccount = () => {
     router.push({
         name: 'account',
-        params: {prop_usn: appStore.username},
+        query: { prop_usn: appStore.username },
     });
 }
+
+const menuItems = [
+    { title: 'Account', icon: 'mdi-account', func: goToAccount },
+    { title: 'Sign Out', icon: 'mdi-logout', func: handleSignOut },
+];
 
 const goToNotifications = () => {
     router.push({
         name: 'notifications',
-        params: { prop_usn: appStore.username },
+        query: { prop_usn: appStore.username },
     });
 }
 
 const getCurrentConfig = async () => {
+    if (!email.value) return
+
     try {
         const result = await fetchAccountDetails.getAccountDetails({
             email: email.value,
@@ -248,11 +250,13 @@ const toggleDarkMode = async (value) => {
     curConfig.value.darkMode = value;
  
     try {
-        await fetchAccountDetails.updateAccountDetails({
-            email: email.value,
-            config: 1,
-            new_config: JSON.stringify(curConfig.value),
-        });
+        if (email.value) {
+            await fetchAccountDetails.updateAccountDetails({
+                email: email.value,
+                config: 1,
+                new_config: JSON.stringify(curConfig.value),
+            });
+        }
     } catch (err) {
         console.error('Failed to update dark mode config:', err);
     }
@@ -272,13 +276,15 @@ onMounted(async () => {
         .split('T')[0];
  
     try {
-        const result = await fetchNotifications.getNotifications({
-            email: email.value,
-            start_date: priorWeek,
-            end_date: today,
-            new: 1,
-        });
-        newNotifs.value = result ?? [];
+        if (email.value) {
+            const result = await fetchNotifications.getNotifications({
+                email: email.value,
+                start_date: priorWeek,
+                end_date: today,
+                new: 1,
+            });
+            newNotifs.value = result ?? [];
+        }
     } catch (err) {
         console.error('Failed to fetch notifications:', err);
     }
@@ -288,7 +294,6 @@ onMounted(async () => {
 <style scoped>
 .nav-divider {
     margin-inline: 6px;
-    opacity: 0.4;
 }
  
 .user-button {
