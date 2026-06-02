@@ -9,8 +9,8 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi';
 
 import '@mdi/font/css/materialdesignicons.css';
 
-import CalculatorIcon from '@/components/Icons/CalculatorIcon.vue';
-import CalculatorIconSidebar from '@/components/Icons/CalculatorIconSidebar.vue';
+import CalculatorIcon from '../components/icons/CalculatorIcon.vue';
+import CalculatorIconSidebar from '../components/icons/CalculatorIconSidebar.vue';
 
 export default createVuetify({
     components,
@@ -25,7 +25,8 @@ export default createVuetify({
 
                 colors: {
                     background: '#f5f8ff',
-                    navbar: '#0091ff'
+                    navbar: '#0091ff',
+                    sidebarBackground: '#ffffff'
                 }
             },
 
@@ -34,7 +35,9 @@ export default createVuetify({
 
                 colors: {
                     background: '#181818',
-                    navbar: '#121212'
+                    navbar: '#121212',
+                    iconColor: '#D9D9D9',
+                    sidebarBackground: '#1A1A1A'
                 }
             }
         }
