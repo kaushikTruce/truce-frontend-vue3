@@ -17,19 +17,19 @@
                 @click="menuActionClick(item.action)"
             >
                 <template #prepend>
-                    <v-icon 
+                    <v-icon
                         :icon="item.icon"
                         :color="iconColor"
                     />
                 </template>
-                
+
                 <v-list-item-title>
                     {{ item.text }}
                 </v-list-item-title>
 
             </v-list-item>
         </v-list>
-        
+
         <template #append>
             <v-list
                 v-model:selected="selectedEnd"
@@ -42,7 +42,7 @@
                     @click="menuActionClick(item.action)"
                 >
                     <template #prepend>
-                        <v-icon 
+                        <v-icon
                             :color="iconColor"
                             :icon="item.icon"
                         />
@@ -50,7 +50,7 @@
 
                     <v-list-item-title>
                         {{ item.text }}
-                    </v-list-item-title>                    
+                    </v-list-item-title>
                 </v-list-item>
             </v-list>
         </template>
@@ -66,9 +66,9 @@
 </template>
 
 <script setup>
-import * as stateAPI from '../stateAPI'
+import { useAppStore } from '@/stores/appStore'
 import Export from '../components/Export.vue'
-import calcSidebar from '../components/icons/CalculatorIconSidebar.vue'
+import calcSidebar from './Icons/CalculatorIconSidebar.vue'
 import { useRoute, useRouter } from 'vue-router';
 import { useTheme } from 'vuetify';
 import { computed, ref } from 'vue';
@@ -76,6 +76,7 @@ import { computed, ref } from 'vue';
 const router = useRouter()
 const route = useRoute()
 const theme = useTheme()
+const appStore = useAppStore()
 
 const exportPopup = ref(false)
 
@@ -89,15 +90,15 @@ const navItems = [
         text: 'Broker Dashboard',
         action: 'broker-dashboard',
         enabled:
-            stateAPI.getStateProperty('role') === 'admin' ||
-            stateAPI.getStateProperty('role') === 'shipper'
+            appStore.role === 'admin' ||
+            appStore.role === 'shipper'
     },
     {
         icon: 'mdi-warehouse',
         text: 'Shipper Dashboard',
         action: 'shipper-dashboard',
         enabled:
-            stateAPI.getStateProperty('role') === 'broker'
+            appStore.role === 'broker'
     },
     {
         icon: 'mdi-state-machine',
@@ -121,14 +122,14 @@ const navItems = [
         icon: calcSidebar,
         text: 'Pricing Calculator',
         action: 'calculator',
-        enabled: stateAPI.getStateProperty('calc_enabled')
+        enabled: appStore.calc_enabled
     },
     {
         icon: 'mdi-chart-pie',
         text: 'Scorecarding',
         action: 'scorecard',
         enabled:
-            stateAPI.getStateProperty('user_id') ===
+            appStore.user_id ===
             '0647c8dc-165c-44d2-9783-64570403a39e'
     },
     {
@@ -197,12 +198,12 @@ function menuActionClick(action) {
         params = {
             initPage: true
         }
-    } 
-    
+    }
+
     if (action === 'export') {
         exportPopup.value = true
         return
-    } 
+    }
 
     router.push({
         name: action,

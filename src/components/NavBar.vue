@@ -15,11 +15,11 @@
                 width="120"
             />
         </div>
- 
+
         <v-spacer />
- 
+
         <SearchBar />
- 
+
         <!-- Notification Menu -->
         <v-menu
             v-model="notificationMenu"
@@ -39,7 +39,7 @@
                     </v-badge>
                 </v-btn>
             </template>
- 
+
             <v-card>
                 <v-list
                     lines="two"
@@ -54,25 +54,25 @@
                             <v-list-subheader v-if="item.header">
                                 {{ item.header }}
                             </v-list-subheader>
- 
+
                             <v-divider
                                 v-else-if="item.divider"
                                 :inset="item.inset"
                             />
- 
+
                             <v-list-item v-else :key="item.subject">
                                 <template #prepend>
                                     <v-icon :color="iconColor">
                                         mdi-bell
                                     </v-icon>
                                 </template>
- 
+
                                 <v-badge dot color="#FFD200">
                                     <v-list-item-title>
                                         {{ item.subject }} - {{ item.sender }}
                                     </v-list-item-title>
                                 </v-badge>
- 
+
                                 <v-list-item-subtitle
                                     style="max-width: 400px"
                                     v-html="item.message"
@@ -80,7 +80,7 @@
                             </v-list-item>
                         </template>
                     </template>
- 
+
                     <v-list-item v-else>
                         <v-list-item-title
                             class="text-center text-medium-emphasis"
@@ -90,9 +90,9 @@
                         </v-list-item-title>
                     </v-list-item>
                 </v-list>
- 
+
                 <v-divider />
- 
+
                 <v-list>
                     <v-list-item
                         class="notification-hover"
@@ -105,9 +105,9 @@
                 </v-list>
             </v-card>
         </v-menu>
- 
+
         <v-divider vertical class="mx-2 nav-divider" />
- 
+
         <!-- User Menu -->
         <v-menu
             v-model="userMenu"
@@ -129,7 +129,7 @@
                     </v-avatar>
                 </v-btn>
             </template>
- 
+
             <v-card elevation="4" rounded max-width="300">
                 <v-list border="t">
                     <!-- Dark Mode Toggle -->
@@ -144,7 +144,7 @@
                             @update:model-value="toggleDarkMode"
                         />
                     </v-list-item>
- 
+
                     <v-list-item
                         v-for="(item, index) in menuItems"
                         :key="index"
@@ -167,7 +167,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { useAppStore } from '../stateAPI';
+import { useAppStore } from '@/stores/appStore';
 import { useTheme } from 'vuetify';
 import { onBeforeMount, onMounted, ref, computed } from 'vue';
 import { signOut } from 'aws-amplify/auth';
@@ -175,7 +175,6 @@ import * as fetchAccountDetails from '../fetchAccountDetails';
 import * as fetchNotifications from '../fetchNotifications';
 import SearchBar from './Search.vue';
 import Truce_Logo from "../assets/Truce_Logo.png"
-import { blue } from 'vuetify/util/colors';
 
 
 const appStore = useAppStore();
@@ -265,7 +264,7 @@ const getCurrentConfig = async () => {
             try {
                 vuetifyTheme.change(isDarkMode.value ? 'dark' : 'light')
             } catch (e) {
-                console.warn('Failed to apply Vuetify theme via global.name, falling back', e)
+                console.warn('Failed to apply Vuetify theme', e)
             }
         }
     } catch (err) {
@@ -276,17 +275,16 @@ const getCurrentConfig = async () => {
 const toggleDarkMode = async (value) => {
     isDarkMode.value = value;
     appStore.setDarkMode(value);
-    // Use Vuetify global theme API
     try {
         vuetifyTheme.change(value ? 'dark' : 'light')
     } catch (e) {
         console.warn('Failed to change Vuetify theme:', e)
     }
- 
+
     if (!curConfig.value) return
-    
+
     curConfig.value.darkMode = value;
- 
+
     try {
         if (email.value) {
             await fetchAccountDetails.updateAccountDetails({
@@ -303,7 +301,7 @@ const toggleDarkMode = async (value) => {
 
 onBeforeMount(async () => {
     // Initialize theme from store (which may have been restored from localStorage)
-    isDarkMode.value = appStore.isDarkMode ?? isDarkMode.value
+    isDarkMode.value = appStore.darkMode
     try {
         vuetifyTheme.change(isDarkMode.value ? 'dark' : 'light')
     } catch (e) {
@@ -320,7 +318,7 @@ onMounted(async () => {
     const priorWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
         .toISOString()
         .split('T')[0];
- 
+
     try {
         if (email.value) {
             const result = await fetchNotifications.getNotifications({
@@ -341,16 +339,16 @@ onMounted(async () => {
 .nav-divider {
     margin-inline: 6px;
 }
- 
+
 .user-button {
     background-color: transparent !important;
     box-shadow: none !important;
 }
- 
+
 .notification-hover:hover {
     cursor: pointer;
 }
- 
+
 .darkModeSwitch {
     font-size: 0.85rem;
 }

@@ -1,21 +1,21 @@
 <template>
-  <v-data-table 
-    :headers="activeHeaders" 
-    :items="displayedData" 
-    v-model:expanded="expanded" 
+  <v-data-table
+    :headers="activeHeaders"
+    :items="displayedData"
+    v-model:expanded="expanded"
     :item-value="itemKey"
-    :show-expand="!props.is_shipper_dashboard" 
+    :show-expand="!props.is_shipper_dashboard"
     :expand-on-click="true"
     :show-select="showSelect"
-    class="elevation-1 dataTable" 
-    :items-per-page-options="[10, 25, 50, 100]" 
+    class="elevation-1 dataTable"
+    :items-per-page-options="[10, 25, 50, 100]"
     :items-per-page="100"
-    v-model:sort-by="sortByModel" 
-    @click:row="onRowClick" 
+    v-model:sort-by="sortByModel"
+    @click:row="onRowClick"
     @update:options="emitUpdatedOptions"
-    :items-length="serverItemsLength" 
-    :row-props="itemRowWidth" 
-    :loading="isTableLoading" 
+    :items-length="serverItemsLength"
+    :row-props="itemRowWidth"
+    :loading="isTableLoading"
     v-model="selected"
     @update:model-value="emitSelectedOptions">
     <template v-for="col in tooltipHeaders" :key="col" v-slot:[`header.${col}`]="{ column }">
@@ -536,7 +536,7 @@ import * as format from '../formatShipmentData'
 import * as utils from '../utils'
 import * as fetchAccountDetails from '../fetchAccountDetails'
 
-import { useAppStore } from '../stateAPI'
+import { useAppStore } from '@/stores/appStore'
 import { storeToRefs } from 'pinia'
 
 const props = defineProps({

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__vuetify-mcp__get_v4_breaking_changes",
+      "mcp__vuetify-mcp__get_component_api_by_version",
+      "Bash(git -C /home/kaushik/projects/transperancy/web show HEAD:src/containers/ShipperDashboard.vue)",
+      "Bash(git -C /home/kaushik/projects/transperancy/web show a7a9582:src/containers/ShipperDashboard.vue)",
+      "Bash(git -C /home/kaushik/projects/transperancy/web show a7a9582 --stat)"
+    ]
+  }
+}

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { getCompanyBrokers } from './fetchBrokerManagement';
 import * as fetchShipments from './fetchShipments';
 import * as globalVariables from './globalVariables';
-import * as stateAPI from './stateAPI';
+import { useAppStore } from '@/stores/appStore';
 
 export const EQUIPMENT_TYPE_LIST = globalVariables.default.equipment_type_list;
 export const DEFAULT_END_DATE = new Date().toLocaleDateString();
@@ -17,6 +17,7 @@ export const PROD_URL = 'truce.io';
 export const TEST_URL = 'truce-dev.com';
 export const DEV_URL = 'localhost';
 export const DEMO_URL = 'dev.truce-experimental.com';
+export const MIGRATED_URL = 'transparency-migration.d3g3zfgwwmjjk5.amplifyapp.com';
 
 export function isProdEnv() {
     return window.location.href.includes(PROD_URL);
@@ -26,7 +27,8 @@ export function isDevEnv() {
     return (
         window.location.href.includes(DEV_URL) ||
         window.location.href.includes(TEST_URL) ||
-        window.location.href.includes(DEMO_URL)
+        window.location.href.includes(DEMO_URL) ||
+        window.location.href.includes(MIGRATED_URL)
     );
 }
 
@@ -56,8 +58,8 @@ export function getColor(score) {
 
     const scoreInt = Number(parseFloat(score).toFixed(0));
 
-    // Vuetify 3 theme access isn't available here; use persisted store value instead
-    const isDarkMode = stateAPI.getStateProperty('isDarkMode') || false;
+    const appStore = useAppStore();
+    const isDarkMode = appStore.darkMode || false;
 
     if (scoreInt > 89) return isDarkMode ? 'rgba(42, 192, 142, 0.75)' : '#2AC08E';
     if (scoreInt > 79) return isDarkMode ? 'rgba(26, 171, 255, 0.8)' : '#1AABFF';
@@ -71,35 +73,27 @@ export async function getData(
     pageType,
     isShipmentTableChange = false
 ) {
+    const appStore = useAppStore();
     // clear query_params
     component.query_params = {};
     component.query_params.is_customer_direct =
         component.isCustomerDirectEnabled ? 1 : 0;
     component.query_params.is_broker_user =
-        stateAPI.getStateProperty(component, 'role') == 'broker' ? 1 : 0;
+        appStore.role == 'broker' ? 1 : 0;
     var targetName;
     component.query_params.lane_graph_query = 0;
-    component.query_params.search_list = stateAPI.getStateProperty(
-        component,
-        'first_load'
-    )
+    component.query_params.search_list = appStore.first_load
         ? 1
         : 0;
     component.query_params.mt_query = isShipmentTableChange ? 0 : 1;
     if (component.isBrokerUser) {
         targetName = 'Shipper';
         component.query_params.index_by = 'shipperId';
-        component.query_params.brokerId = stateAPI.getStateProperty(
-            component,
-            'user_id'
-        );
+        component.query_params.brokerId = appStore.user_id;
     } else if (!component.isBrokerUser) {
         targetName = 'Broker';
         component.query_params.index_by = 'brokerId';
-        component.query_params.shipperId = stateAPI.getStateProperty(
-            component,
-            'user_id'
-        );
+        component.query_params.shipperId = appStore.user_id;
     }
     if (pageType == 'drilldown') {
         if (component.isLaneData) {
@@ -107,24 +101,15 @@ export async function getData(
             targetName = 'Lane';
             component.query_params.index_by = 'laneId';
             if (component.isBrokerUser) {
-                component.query_params.shipperId = stateAPI.getStateProperty(
-                    component,
-                    'shipper'
-                );
+                component.query_params.shipperId = appStore.shipper;
             } else if (!component.isBrokerUser) {
-                component.query_params.brokerId = stateAPI.getStateProperty(
-                    component,
-                    'broker'
-                );
+                component.query_params.brokerId = appStore.broker;
             }
             component.query_params.focus_lanes = component.focusLanes;
             component.query_params.favorite_lanes = component.favoriteLanes;
         } else {
             // Lane Drilldown
-            component.query_params.laneId = stateAPI.getStateProperty(
-                component,
-                'lane'
-            );
+            component.query_params.laneId = appStore.lane;
             component.query_params.lane_graph_query = isShipmentTableChange
                 ? 0
                 : 1;
@@ -154,7 +139,7 @@ export async function getData(
     component.query_params.s_query = 1;
     component.query_params.km_query = 1;
     component.query_params.dt_query = 1;
-    if (stateAPI.getStateProperty(component, 'role') == 'admin') {
+    if (appStore.role == 'admin') {
         component.query_params.df_query = 1;
     } else {
         component.query_params.df_query = 0;
@@ -177,7 +162,7 @@ export async function getData(
         .toISOString()
         .substring(0, 10);
     let projection_start_date = new Date(
-        new Date(stateAPI.getStateProperty(component, 'startDate')) -
+        new Date(appStore.startDate) -
             new Date().getTimezoneOffset() * 60000
     )
         .toISOString()
@@ -380,8 +365,7 @@ export async function getData(
                     id: null
                 }
             ];
-            const selectSBObject = stateAPI
-                .getStateProperty(component, `${targetName.toLowerCase()}_list`)
+            const selectSBObject = (appStore[`${targetName.toLowerCase()}_list`] || [])
                 .filter((sb) => sb.id == component.selectedSB);
             if (selectSBObject.length != 0) {
                 component.dropdownSBList.push(selectSBObject[0]);
@@ -459,7 +443,7 @@ export async function getData(
             if (pageType == 'dashboard') {
                 var newDataList = [];
                 var newLaneList = [];
-                if (stateAPI.getStateProperty(component, 'first_load') || result.search_list_brokers.length) {
+                if (appStore.first_load || result.search_list_brokers.length) {
                     for (
                         var i = 0;
                         i < result.search_list_brokers.length;
@@ -475,11 +459,11 @@ export async function getData(
                                 result.search_list_brokers[i].max_ingestion_time
                         });
                     }
-                    stateAPI.setStateProperty(
-                        component,
-                        `${targetName.toLowerCase()}_list`,
-                        newDataList
-                    );
+                    if (targetName.toLowerCase() === 'broker') {
+                        appStore.brokerList = newDataList;
+                    } else if (targetName.toLowerCase() === 'shipper') {
+                        appStore.shipperList = newDataList;
+                    }
 
                     for (var j = 0; j < result.search_list_lanes.length; j++) {
                         newLaneList.push({
@@ -490,12 +474,8 @@ export async function getData(
                                 result.search_list_lanes[j].equipmenttype
                         });
                     }
-                    stateAPI.setStateProperty(
-                        component,
-                        'lane_list',
-                        newLaneList
-                    );
-                    stateAPI.setStateProperty(component, 'first_load', false);
+                    appStore.laneList = newLaneList;
+                    appStore.setFirstLoad(false);
                 }
             }
         });
@@ -605,6 +585,7 @@ export function resetFilters(
     isCustomerDirectEnabled,
     component
 ) {
+    const appStore = useAppStore();
     // delete chip that was removed from filterChips
     filterChips.delete(objType);
 
@@ -622,7 +603,7 @@ export function resetFilters(
 
     if (objType == 'dateRange') {
         end = new Date();
-        start = new Date(stateAPI.getStateProperty(component, 'startDate'));
+        start = new Date(appStore.startDate);
         component.startDate = new Date(start.setHours(5, 0, 0));
         component.endDate = new Date(end.setHours(5, 0, 0));
         timePeriod = (
@@ -655,35 +636,28 @@ export function resetFilters(
         );
         component.isComparisonEnabled = false;
         component.keyMetricsToggle = null;
-        stateAPI.setStateProperty(component, 'storeEndDate', new Date());
-        stateAPI.setStateProperty(component, 'storeDates', null);
-        stateAPI.setStateProperty(component, 'storeTimePeriod', timePeriod);
-        stateAPI.setStateProperty(component, 'storeIsComparisonEnabled', false);
-        stateAPI.setStateProperty(component, 'storeKeyMetricsToggle', null);
+        appStore.storeEndDate = new Date();
+        appStore.storeDates = null;
+        appStore.storeTimePeriod = timePeriod;
+        appStore.storeIsComparisonEnabled = false;
+        appStore.storeKeyMetricsToggle = null;
     } else if (objType.includes('equipment')) {
         ret = objType.split('_')[1];
         selectedEquipmentTypes = resetEquipmentTypeChips(ret, filterChips);
         component.endDate = date;
-        component.filters.equipment = stateAPI.getStateProperty(
-            component,
-            'equipment_type_list'
-        );
+        component.filters.equipment = appStore.equipment_type_list;
     } else if (objType == 'volumeThreshold') {
         volumeThreshold = 0;
         selectedEquipmentTypes = resetEquipmentTypeChips('', filterChips);
         component.endDate = date;
         component.filters.volume = 0;
-        stateAPI.setStateProperty(component, 'storeVolumeThreshold', 0);
+        appStore.storeVolumeThreshold = 0;
     } else if (objType == 'isCustomerDirectEnabled') {
         isCustomerDirectEnabled = false;
         selectedEquipmentTypes = resetEquipmentTypeChips('', filterChips);
         component.endDate = date;
         component.filters.volume = 0;
-        stateAPI.setStateProperty(
-            component,
-            'storeIsCustomerDirectEnabled',
-            false
-        );
+        appStore.storeIsCustomerDirectEnabled = false;
     }
 
     // if (filterChips.size == 1 && filterChips.has('enddate')) {

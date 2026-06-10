@@ -9,10 +9,11 @@ import { onBeforeMount, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useTheme } from 'vuetify'
 
-import { getStateProperty } from './stateAPI'
+import { useAppStore } from '@/stores/appStore'
 
 const route = useRoute()
 const theme = useTheme()
+const appStore = useAppStore()
 
 function handleThemeChange(isDark) {
   const htmlTag = document.documentElement
@@ -25,7 +26,7 @@ function handleThemeChange(isDark) {
 }
 
 onBeforeMount(() => {
-  const darkMode = getStateProperty('darkMode')
+  const darkMode = appStore.darkMode
 
   theme.change(darkMode ? 'dark' : 'light')
 

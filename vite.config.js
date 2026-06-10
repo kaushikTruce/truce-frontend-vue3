@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { fileURLToPath, URL } from 'node:url';
 
 import { defineConfig } from 'vite';
 
@@ -30,7 +31,7 @@ function sanitizeImportedCss() {
 
     return {
         name: 'sanitize-imported-css',
-
+        
         enforce: 'post',
 
         load(id) {
@@ -88,6 +89,11 @@ function sanitizeImportedCss() {
 }
 
 export default defineConfig({
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url))
+        }
+    },
     plugins: [
         vue(),
 

@@ -1,10 +1,10 @@
 # Vue 2 to Vue 3 Migration Plan: Transparency Frontend
 
-**Project**: Truce Transparency Frontend  
-**Current Version**: Vue 2.6.11  
-**Target Version**: Vue 3.5.32  
-**Migration Date**: May 2025  
-**Estimated Timeline**: 20-30 days  
+**Project**: Truce Transparency Frontend
+**Current Version**: Vue 2.6.11
+**Target Version**: Vue 3.5.32
+**Migration Date**: May 2025
+**Estimated Timeline**: 20-30 days
 
 ---
 
@@ -153,7 +153,7 @@ frontend/transparency/web/
 1. **Create Migration Repo**
    ```bash
    git clone https://github.com/kaushikTruce/truce-frontend-vue3.git
-   cd truce-frontend-vue3  
+   cd truce-frontend-vue3
    git push -u origin main
    ```
 
@@ -196,15 +196,15 @@ frontend/transparency/web/
    // Before (Vue 2)
    import Vue from 'vue'
    import App from './App.vue'
-   
+
    new Vue({
      render: h => h(App),
    }).$mount('#app')
-   
+
    // After (Vue 3)
    import { createApp } from 'vue'
    import App from './App.vue'
-   
+
    createApp(App).mount('#app')
    ```
 
@@ -228,14 +228,14 @@ frontend/transparency/web/
    // Before (Vue Router 3)
    import VueRouter from 'vue-router'
    Vue.use(VueRouter)
-   
+
    const router = new VueRouter({
      routes: [...]
    })
-   
+
    // After (Vue Router 5)
    import { createRouter, createWebHistory } from 'vue-router'
-   
+
    const router = createRouter({
      history: createWebHistory(),
      routes: [...]
@@ -267,7 +267,7 @@ frontend/transparency/web/
    // plugins/vuetify.js
    import { createVuetify } from 'vuetify'
    import 'vuetify/styles'
-   
+
    export default createVuetify({
      theme: {
        defaultTheme: 'light'
@@ -280,7 +280,7 @@ frontend/transparency/web/
    ```vue
    <!-- Before -->
    <template v-slot:activator="{ on, attrs }">
-   
+
    <!-- After -->
    <template v-slot:activator="{ props }">
    ```
@@ -353,12 +353,12 @@ frontend/transparency/web/
    // Before
    import Vuex from 'vuex'
    Vue.use(Vuex)
-   
+
    export default new Vuex.Store({...})
-   
+
    // After
    import { createStore } from 'vuex'
-   
+
    export default createStore({...})
    ```
 
@@ -374,7 +374,7 @@ frontend/transparency/web/
 2. **Create Pinia Stores**
    ```javascript
    import { defineStore } from 'pinia'
-   
+
    export const useUserStore = defineStore('user', {
      state: () => ({...}),
      actions: {...}
@@ -445,7 +445,7 @@ frontend/transparency/web/
 - **Mitigation**: Use Vuetify migration guide, test thoroughly
 
 #### 2. Large Component Complexity
-- **Risk Level**: HIGH  
+- **Risk Level**: HIGH
 - **Impact**: DataTable.vue, Calculator.vue may require significant rework
 - **Mitigation**: Allocate extra time, consider refactoring
 
@@ -502,7 +502,7 @@ frontend/transparency/web/
 
 - **Primary Developer**: 1 Vue.js developer
 - **Testing Support**: 1 QA engineer (part-time)
-- **DevOps Support**: 
+- **DevOps Support**:
 - **Business Stakeholder**: For UAT and approval
 
 ### **Buffer Recommendations**
@@ -696,11 +696,11 @@ For questions or issues during migration:
 - **Project Manager**: [PM Name]
 - **DevOps Support**: [DevOps Contact]
 
-**Migration Repo**: `vue3-migration`  
-**Backup Branch**: `vue2-backup`  
+**Migration Repo**: `vue3-migration`
+**Backup Branch**: `vue2-backup`
 **Documentation**: This document + inline code comments
 
 ---
 
-*Last Updated: May 19, 2026*  
+*Last Updated: May 19, 2026*
 *Document Version: 2.0*

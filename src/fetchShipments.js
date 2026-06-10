@@ -1,8 +1,5 @@
 import { post } from 'aws-amplify/api';
-import {
-    isDevEnv,
-    isProdEnv
-} from './utils';
+import { isDevEnv, isProdEnv } from './utils';
 
 function getShipmentsApiName(queryParams) {
     if (isProdEnv()) {

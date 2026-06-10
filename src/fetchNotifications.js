@@ -1,11 +1,5 @@
-import {
-    post,
-    put
-} from 'aws-amplify/api';
-import {
-    isDevEnv,
-    isProdEnv
-} from './utils';
+import { post, put } from 'aws-amplify/api';
+import { isDevEnv, isProdEnv } from './utils';
 
 function getNotificationsApiName(queryParams) {
     if (isProdEnv()) {

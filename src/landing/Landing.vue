@@ -2,62 +2,62 @@
     <v-app>
         <v-app-bar
             flat
-            :color="'transparent'" 
+            :color="'transparent'"
             class="px-xl-14 px-lg-14 px-md-14 hidden-sm-and-down">
             <div>
                 <v-img
-                    alt="Truce Logo" 
-                    id="logo" 
-                    class="shrink mt-2 ml-4" 
-                    :src="logoSrc" 
+                    alt="Truce Logo"
+                    id="logo"
+                    class="shrink mt-2 ml-4"
+                    :src="logoSrc"
                     width="140"
-                    style="margin-right: 120px" 
-                    @click="toTop()" 
+                    style="margin-right: 120px"
+                    @click="toTop()"
                 />
             </div>
             <v-spacer />
-            <v-btn 
-                style="margin-left: 120px; font-size: 16px" 
-                class="mt-5 dmsans font-weight-bold" 
+            <v-btn
+                style="margin-left: 120px; font-size: 16px"
+                class="mt-5 dmsans font-weight-bold"
                 :color="btnColor_1"
                 variant="text"
                 @click="contactFormDialog = true"
             >
                 Contact Us
             </v-btn>
-            <v-btn 
-                style="margin-left: 10px; font-size: 16px" 
-                class="mt-5 dmsans font-weight-bold" 
+            <v-btn
+                style="margin-left: 10px; font-size: 16px"
+                class="mt-5 dmsans font-weight-bold"
                 :color="btnColor_1"
-                variant="text" 
+                variant="text"
                 @click="navigateToApp()"
             >
                 Sign In
             </v-btn>
         </v-app-bar>
 
-        <v-app-bar 
-            flat 
-            color="transparent" 
+        <v-app-bar
+            flat
+            color="transparent"
             class="pa-0 ma-0 hidden-md-and-up"
         >
             <div>
-                <v-img 
-                    alt="Truce Logo" 
-                    class="shrink mt-2" 
-                    :src="logoSrc" 
+                <v-img
+                    alt="Truce Logo"
+                    class="shrink mt-2"
+                    :src="logoSrc"
                     width="140"
                 />
             </div>
         </v-app-bar>
 
-        <v-btn 
-            v-show="backToTop" 
-            icon color="blue-darken-4" 
-            :class="backToTopMargin" 
+        <v-btn
+            v-show="backToTop"
+            icon color="blue-darken-4"
+            :class="backToTopMargin"
             class="hidden-md-and-down"
-            style="position: fixed; bottom: 0; right: 16px" 
-            elevation="0" 
+            style="position: fixed; bottom: 0; right: 16px"
+            elevation="0"
             @click="toTop"
         >
             <v-icon>mdi-chevron-up</v-icon>
@@ -66,8 +66,8 @@
         <v-main class="pa-0">
             <v-dialog v-model="contactFormDialog" max-width="600px">
                 <v-form ref="contactForm" v-model="contactFormValid">
-                    <v-card 
-                        class="pa-6" 
+                    <v-card
+                        class="pa-6"
                         style="background-color: whitesmoke; color: black"
                     >
                         <v-card-title>
@@ -77,42 +77,42 @@
                             <v-container>
                                 <v-row>
                                     <v-col cols="6">
-                                        <v-text-field 
-                                            label="Name*" 
+                                        <v-text-field
+                                            label="Name*"
                                             :rules="[
                                                 rules.required,
                                                 rules.alphanumeric
-                                            ]" 
+                                            ]"
                                             v-model="name">
                                         </v-text-field>
                                     </v-col>
                                     <v-col cols="6">
-                                        <v-text-field 
-                                            label="Company" 
+                                        <v-text-field
+                                            label="Company"
                                             :rules="[rules.alphanumeric]"
                                             v-model="company"
                                         ></v-text-field>
                                     </v-col>
                                     <v-col cols="12">
-                                        <v-text-field 
-                                            label="Email*" 
+                                        <v-text-field
+                                            label="Email*"
                                             :rules="[
                                                 rules.required,
                                                 rules.email
-                                            ]" 
+                                            ]"
                                             v-model="email"
                                         ></v-text-field>
                                     </v-col>
                                     <v-col cols="12">
-                                        <v-textarea 
-                                            name="input-7-1" 
-                                            label="Comments" 
+                                        <v-textarea
+                                            name="input-7-1"
+                                            label="Comments"
                                             :rules="[
                                                 rules.counter,
                                                 rules.alphanumeric
-                                            ]"  
-                                            variant="outlined" 
-                                            v-model="comment" 
+                                            ]"
+                                            variant="outlined"
+                                            v-model="comment"
                                             counter
                                             :maxlength="commentMaxLength"
                                         ></v-textarea>
@@ -122,9 +122,9 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn 
-                                color="red" 
-                                variant="text" 
+                            <v-btn
+                                color="red"
+                                variant="text"
                                 @click="
                                     contactFormDialog = false;
                                     resetForm();
@@ -132,10 +132,10 @@
                             >
                                 Cancel
                             </v-btn>
-                            <v-btn 
-                                color="green" 
-                                variant="text" 
-                                :disabled="!contactFormValid" 
+                            <v-btn
+                                color="green"
+                                variant="text"
+                                :disabled="!contactFormValid"
                                 @click="sendEmail()"
                             >
                                 Submit
@@ -148,13 +148,13 @@
             <section id="header">
                 <v-container fluid class="pa-0">
                     <v-img
-                        :src="headerBlue" 
+                        :src="headerBlue"
                         class="align-center"
                         gradient="to bottom, rgba(0,0,0,0.7), transparent 40vh"
                     >
                         <v-row style="margin-top: -100px !important">
                             <v-col cols="12" xl="8" lg="8" md="8" sm="12">
-                                <div 
+                                <div
                                     class="text-h5 text-sm-h4 text-md-h3 text-lg-h2 text-xl-h2 font-weight-bold ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-7 dmsans"
                                     style="
                                         color: white;
@@ -165,7 +165,7 @@
                                     Data-transparent relationships <br />
                                     for shippers and 3PLs
                                 </div>
-                                <div 
+                                <div
                                     class="text-subtitle-1 text-sm-h6 text-md-h5 text-lg-h4 text-xl-h4 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left hidden-sm-and-down mb-7 dmsans"
                                     style="color: white; width: 80%"
                                 >
@@ -173,7 +173,7 @@
                                     sustainable cost reduction, and <br />
                                     improved on time delivery.
                                 </div>
-                                <div 
+                                <div
                                     class="text-subtitle-1 mx-auto text-center hidden-md-and-up font-weight-bold mb-7 dmsans"
                                     style="color: #0d47a1; width: 80%"
                                 >
@@ -181,13 +181,13 @@
                                     sustainable cost reduction, and <br />
                                     improved on time delivery.
                                 </div>
-                                <div 
+                                <div
                                     class="ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left"
                                     style="color: white; width: 80%"
                                 >
-                                    <v-btn 
+                                    <v-btn
                                         style="font-size: 17px; color: #0091ff !important"
-                                        class="mt-4 dmsans font-weight-bold" 
+                                        class="mt-4 dmsans font-weight-bold"
                                         color="white"
                                         size="x-large"
                                         @click="contactFormDialog = true"
@@ -197,15 +197,15 @@
                                 </div>
                             </v-col>
                         </v-row>
-                        <v-row 
-                            justify="center" 
-                            style="position: relative; bottom: -25vh" 
+                        <v-row
+                            justify="center"
+                            style="position: relative; bottom: -25vh"
                             class="hidden-sm-and-down"
                         >
-                            <v-btn 
-                                icon 
-                                variant="outlined" 
-                                color="white" 
+                            <v-btn
+                                icon
+                                variant="outlined"
+                                color="white"
                                 @click="goTo('#platform', { offset: -76 })"
                             >
                                 <v-icon>mdi-chevron-down</v-icon>
@@ -216,54 +216,54 @@
             </section>
 
             <section
-                id="platform" 
-                class="application" 
+                id="platform"
+                class="application"
                 style="
-                    height: 102vh !important; 
+                    height: 102vh !important;
                     background-color: #f7f9fe !important;
                 "
             >
                 <v-container fluid class="pa-0">
-                    <v-row 
-                        class="pa-0 ma-0 align-center" 
+                    <v-row
+                        class="pa-0 ma-0 align-center"
                         style="height: 102vh; max-width: 100%"
                     >
-                        <v-col 
-                            cols="6" 
+                        <v-col
+                            cols="6"
                             class="pr-13 hidden-sm-and-down"
                         >
-                            <div 
-                                class="ml-auto mb-7" 
+                            <div
+                                class="ml-auto mb-7"
                                 style="width: 80%; max-width: 800px"
                             >
                                 <v-img :src="platformImage.src"></v-img>
                             </div>
                         </v-col>
-                        <v-col 
-                            cols="12" 
-                            xl="6" 
-                            lg="6" 
-                            md="6" 
-                            sm="12" 
+                        <v-col
+                            cols="12"
+                            xl="6"
+                            lg="6"
+                            md="6"
+                            sm="12"
                             class="pl-xl-13 pl-lg-13 pl-md-13"
                         >
-                            <div 
+                            <div
                                 class="mr-xl-auto mr-lg-auto mr-md-auto ml-xl-0 ml-lg-0 ml-md-0 mx-sm-auto mx-auto mb-7 dmsans"
                                 style="width: 80%; max-width: 800px"
                             >
-                                <div 
+                                <div
                                     class="text-xl-h5 text-lg-h5 text-md-h6 text-sm-subtitle-1 text-body-1 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-2 dmsans"
                                     style="color: #a6a8b0"
                                 >
                                     P L A T F O R M
                                 </div>
-                                <div 
+                                <div
                                     class="text-xl-h2 text-lg-h2 text-md-h3 text-sm-h4 text-h6 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-xl-7 mb-lg-7 mb-md-7 mb-sm-3 mb-3 font-weight-bold dmsans"
                                     style="color: #0091ff"
                                 >
                                     Introducing the Truce Transparency Platform
                                 </div>
-                                <div 
+                                <div
                                     class="text-xl-h5 text-lg-h5 text-md-h6 text-sm-subtitle-1 text-body-2 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-7 font-weight-light pr-xl-16 pr-lg-16 pr-md-16 dmsans"
                                     style="color: black"
                                 >
@@ -274,21 +274,21 @@
                                     partnerships to the next level.
                                 </div>
                             </div>
-                            <div 
+                            <div
                                 class="mx-auto mb-7 hidden-md-and-up" style="width: 70%; max-width: 800px"
                             >
                                 <v-img :src="platformImage.src"></v-img>
                             </div>
                         </v-col>
                     </v-row>
-                    <v-row 
-                        justify="center" 
+                    <v-row
+                        justify="center"
                         style="position: relative; bottom: 13vh" class="hidden-sm-and-down"
                     >
-                        <v-btn 
-                            icon 
-                            variant="outlined" 
-                            color="blue-darken-4" 
+                        <v-btn
+                            icon
+                            variant="outlined"
+                            color="blue-darken-4"
                             @click="goTo('#trust', { offset: -76 })"
                         >
                             <v-icon>mdi-chevron-down</v-icon>
@@ -297,41 +297,41 @@
                 </v-container>
             </section>
 
-            <section 
-                id="trust" 
+            <section
+                id="trust"
                 style="
-                    height: 102vh !important; 
+                    height: 102vh !important;
                     background-color: white
                 "
             >
                 <v-container fluid class="pa-0">
                     <v-row class="pa-0 ma-0 align-center" style="height: 102vh; max-width: 100%">
-                        <v-col 
-                            cols="12" 
-                            xl="6" 
-                            lg="6" 
-                            md="6" 
-                            sm="12" 
+                        <v-col
+                            cols="12"
+                            xl="6"
+                            lg="6"
+                            md="6"
+                            sm="12"
                             class="pl-xl-13 pl-lg-13 pl-md-13"
                         >
-                            <div 
+                            <div
                                 class="ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto mb-7"
                                 style="width: 80%; max-width: 800px"
                             >
-                                <div 
+                                <div
                                     class="text-xl-h5 text-lg-h5 text-md-h6 text-sm-subtitle-1 text-body-2 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-2 dmsans"
                                     style="color: #a6a8b0"
                                 >
                                     T R U S T
                                 </div>
-                                <div 
+                                <div
                                     class="text-xl-h2 text-lg-h2 text-md-h3 text-sm-h4 text-h5 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-xl-7 mb-lg-7 mb-md-7 mb-sm-3 mb-3 font-weight-bold dmsans"
                                     style="color: #0091ff"
                                 >
                                     Build the foundation for trusted
                                     partnerships
                                 </div>
-                                <div 
+                                <div
                                     class="text-xl-h5 text-lg-h5 text-md-h6 text-sm-subtitle-1 text-body-2 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-7 font-weight-light pr-xl-16 pr-lg-16 pr-md-16 dmsans"
                                     style="color: black"
                                 >
@@ -341,33 +341,33 @@
                                     current partnerships.
                                 </div>
                             </div>
-                            <div 
-                                class="mx-auto mb-7 hidden-md-and-up" 
+                            <div
+                                class="mx-auto mb-7 hidden-md-and-up"
                                 style="width: 70%; max-width: 800px"
                             >
                                 <v-img :src="trustImage.src"></v-img>
                             </div>
                         </v-col>
-                        <v-col 
-                            cols="6" 
+                        <v-col
+                            cols="6"
                             class="hidden-sm-and-down"
                         >
-                            <div 
-                                class="mr-auto mb-7" 
+                            <div
+                                class="mr-auto mb-7"
                                 style="width: 80%; max-width: 800px"
                             >
                                 <v-img :src="trustImage.src"></v-img>
                             </div>
                         </v-col>
                     </v-row>
-                    <v-row 
-                        justify="center" 
-                        style="position: relative; bottom: 13vh" 
+                    <v-row
+                        justify="center"
+                        style="position: relative; bottom: 13vh"
                         class="hidden-sm-and-down"
                     >
-                        <v-btn 
-                            icon 
-                            variant="outlined" 
+                        <v-btn
+                            icon
+                            variant="outlined"
                             color="blue-darken-4"
                             @click="goTo('#stability', { offset: -76 })"
                         >
@@ -377,55 +377,55 @@
                 </v-container>
             </section>
 
-            <section 
-                id="stability" 
+            <section
+                id="stability"
                 style="
                     height: 102vh !important;
                     background-color: #eef1fc !important;
                 "
             >
                 <v-container fluid class="pa-0">
-                    <v-row 
-                        class="pa-0 ma-0 align-center" 
+                    <v-row
+                        class="pa-0 ma-0 align-center"
                         style="height: 102vh; max-width: 100%"
                     >
-                        <v-col 
-                            cols="6" 
+                        <v-col
+                            cols="6"
                             class="pr-13 hidden-sm-and-down"
                         >
-                            <div 
-                                class="ml-auto mb-7" 
+                            <div
+                                class="ml-auto mb-7"
                                 style="width: 80%; max-width: 800px"
                             >
                                 <v-img :src="stabilityImage.src"></v-img>
                             </div>
                         </v-col>
-                        <v-col 
-                            cols="12" 
-                            xl="6" 
-                            lg="6" 
-                            md="6" 
-                            sm="12" 
+                        <v-col
+                            cols="12"
+                            xl="6"
+                            lg="6"
+                            md="6"
+                            sm="12"
                             class="pl-xl-13 pl-lg-13 pl-md-13"
                         >
-                            <div 
+                            <div
                                 class="mr-xl-auto mr-lg-auto mr-md-auto ml-xl-0 ml-lg-0 ml-md-0 mx-sm-auto mx-auto mb-7 dmsans"
                                 style="width: 80%; max-width: 800px"
                             >
-                                <div 
+                                <div
                                     class="text-xl-h5 text-lg-h5 text-md-h6 text-sm-subtitle-1 text-body-2 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-2 dmsans"
                                     style="color: #a6a8b0"
                                 >
                                     S T A B I L I T Y
                                 </div>
-                                <div 
+                                <div
                                     class="text-xl-h2 text-lg-h2 text-md-h3 text-sm-h4 text-h5 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-xl-7 mb-lg-7 mb-md-7 mb-sm-3 mb-3 font-weight-bold dmsans"
                                     style="color: #0091ff"
                                 >
                                     More stability and <br />
                                     more commitment
                                 </div>
-                                <div 
+                                <div
                                     class="text-xl-h5 text-lg-h5 text-md-h6 text-sm-subtitle-1 text-body-2 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-7 font-weight-light pr-xl-16 pr-lg-16 pr-md-16 dmsans"
                                     style="color: black"
                                 >
@@ -437,21 +437,21 @@
                                     if you choose.
                                 </div>
                             </div>
-                            <div 
+                            <div
                                 class="mx-auto mb-7 hidden-md-and-up" style="width: 70%; max-width: 800px"
                             >
                                 <v-img :src="stabilityImage.src"></v-img>
                             </div>
                         </v-col>
                     </v-row>
-                    <v-row 
-                        justify="center" 
-                        style="position: relative; bottom: 13vh" 
+                    <v-row
+                        justify="center"
+                        style="position: relative; bottom: 13vh"
                         class="hidden-sm-and-down"
                     >
-                        <v-btn 
-                            icon 
-                            variant="outlined" 
+                        <v-btn
+                            icon
+                            variant="outlined"
                             color="blue-darken-4"
                             @click="goTo('#network', { offset: -76 })"
                         >
@@ -461,43 +461,43 @@
                 </v-container>
             </section>
 
-            <section 
-                id="network" 
+            <section
+                id="network"
                 style="
-                    height: 102vh !important; 
+                    height: 102vh !important;
                     background-color: white"
                 >
                 <v-container fluid class="pa-0">
-                    <v-row 
-                        class="pa-0 align-center ma-0" 
+                    <v-row
+                        class="pa-0 align-center ma-0"
                         style="height: 102vh !important; max-width: 100%"
                     >
-                        <v-col 
-                            cols="12" 
-                            xl="6" 
-                            lg="6" 
-                            md="6" 
-                            sm="12" 
+                        <v-col
+                            cols="12"
+                            xl="6"
+                            lg="6"
+                            md="6"
+                            sm="12"
                             class="pl-xl-13 pl-lg-13 pl-md-13"
                         >
-                            <div 
+                            <div
                                 class="ml-xl-auto ml-lg-auto ml-md-auto mx-sm-auto mx-auto mr-xl-0 mr-lg-0 mr-md-0 mb-7"
                                 style="width: 80%; max-width: 800px"
                             >
-                                <div 
+                                <div
                                     class="text-xl-h5 text-lg-h5 text-md-h6 text-sm-subtitle-1 text-body-1 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-2 dmsans"
                                     style="color: #a6a8b0"
                                 >
                                     N E T W O R K
                                 </div>
-                                <div 
+                                <div
                                     class="text-xl-h2 text-lg-h2 text-md-h3 text-sm-h4 text-h5 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-xl-7 mb-lg-7 mb-md-7 mb-sm-3 mb-3 font-weight-bold dmsans"
                                     style="color: #0091ff"
                                 >
                                     Protect your budget and optimize your
                                     network
                                 </div>
-                                <div 
+                                <div
                                     class="text-xl-h5 text-lg-h5 text-md-h6 text-sm-subtitle-1 text-body-2 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-7 font-weight-light pr-xl-16 pr-lg-16 pr-md-16 dmsans"
                                     style="color: black"
                                 >
@@ -513,27 +513,27 @@
                                 <v-img :src="networkImage.src"></v-img>
                             </div>
                         </v-col>
-                        <v-col 
-                            cols="6" 
+                        <v-col
+                            cols="6"
                             class="hidden-sm-and-down"
                         >
-                            <div 
-                                class="mr-auto mb-7" 
+                            <div
+                                class="mr-auto mb-7"
                                 style="width: 80%; max-width: 800px"
                             >
                                 <v-img :src="networkImage.src"></v-img>
                             </div>
                         </v-col>
                     </v-row>
-                    <v-row 
-                        justify="center" 
-                        style="position: relative; bottom: 13vh" 
+                    <v-row
+                        justify="center"
+                        style="position: relative; bottom: 13vh"
                         class="hidden-sm-and-down"
                     >
-                        <v-btn 
-                            icon 
-                            variant="outlined" 
-                            color="blue-darken-4" 
+                        <v-btn
+                            icon
+                            variant="outlined"
+                            color="blue-darken-4"
                             @click="goTo('#contact', { offset: -76 })"
                         >
                             <v-icon>mdi-chevron-down</v-icon>
@@ -542,47 +542,47 @@
                 </v-container>
             </section>
 
-            <section 
-                id="contact" 
+            <section
+                id="contact"
                 style="
                     height: 90vh !important;
                     background-color: #eef1fc !important;
                 ">
                 <v-container fluid class="pa-0">
-                    <v-row 
-                        class="pa-0 ma-0 align-center" 
+                    <v-row
+                        class="pa-0 ma-0 align-center"
                         style="height: 87vh; max-width: 100%"
                     >
-                        <v-col 
-                            cols="6" 
+                        <v-col
+                            cols="6"
                             class="pr-13 hidden-sm-and-down"
                         >
-                            <div 
-                                class="ml-auto mb-7" 
+                            <div
+                                class="ml-auto mb-7"
                                 style="width: 80%; max-width: 800px"
                             >
                                 <v-img :src="contactUsImage.src"></v-img>
                             </div>
                         </v-col>
-                        <v-col 
-                            cols="12" 
-                            xl="6" 
-                            lg="6" 
-                            md="6" 
-                            sm="12" 
+                        <v-col
+                            cols="12"
+                            xl="6"
+                            lg="6"
+                            md="6"
+                            sm="12"
                             class="pl-xl-13 pl-lg-13 pl-md-13"
                         >
-                            <div 
+                            <div
                                 class="mr-xl-auto mr-lg-auto mr-md-auto mx-sm-auto mx-auto ml-xl-0 ml-lg-0 ml-md-0 mb-7"
                                 style="width: 80%; max-width: 800px"
                             >
-                                <div 
+                                <div
                                     class="text-xl-h2 text-lg-h2 text-md-h3 text-sm-h4 text-h5 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-3 font-weight-bold dmsans"
                                     style="color: #0091ff"
                                 >
                                     Contact Us
                                 </div>
-                                <div 
+                                <div
                                     class="text-xl-h5 text-lg-h5 text-md-h6 text-sm-subtitle-1 text-subtitle-2 ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left mb-7 font-weight-light pr-xl-16 pr-lg-16 pr-md-16 dmsans"
                                     style="color: black"
                                 >
@@ -592,10 +592,10 @@
                                 <div
                                     class="mb-7 font-weight-light pr-xl-16 pr-lg-16 pr-md-16 dmsans ml-xl-auto ml-lg-auto ml-md-auto mr-xl-0 mr-lg-0 mr-md-0 mx-sm-auto mx-auto text-center text-sm-center text-md-left text-lg-left text-xl-left"
                                 >
-                                    <v-btn 
+                                    <v-btn
                                         style="font-size: 17px; color: white;"
-                                        class="mt-4 dmsans font-weight-bold" 
-                                        elevation="0" 
+                                        class="mt-4 dmsans font-weight-bold"
+                                        elevation="0"
                                         color="blue-darken-4"
                                         size="x-large"
                                         @click="contactFormDialog = true"
@@ -609,13 +609,13 @@
                 </v-container>
             </section>
 
-            <v-footer 
+            <v-footer
                 style="background-color: #0d47a1"
             >
-                <v-card 
-                    flat 
-                    tile 
-                    width="100%" 
+                <v-card
+                    flat
+                    tile
+                    width="100%"
                     class="bg-blue-darken-4 text-center hidden-sm-and-down"
                 >
                     <v-card-text>
@@ -623,35 +623,35 @@
                             <v-col cols="6">
                                 <v-row>
                                     <div>
-                                        <v-img 
-                                            alt="Truce Logo" 
-                                            class="shrink" 
-                                            src="../assets/Truce_Logo_White.png"
-                                            width="140" style="margin-right: 120px" 
+                                        <v-img
+                                            alt="Truce Logo"
+                                            class="shrink"
+                                            :src="Truce_Logo_White"
+                                            width="140" style="margin-right: 120px"
                                         />
                                     </div>
                                 </v-row>
                                 <v-row>
-                                    <div 
+                                    <div
                                         class="text-white"
                                     >
                                         {{ `\u00A9 ${getCopyrightString()}` }}
                                     </div>
                                 </v-row>
                             </v-col>
-                            <v-col 
-                                cols="6" 
+                            <v-col
+                                cols="6"
                                 class="text-right"
                             >
-                                <v-btn 
-                                    style="margin-left: 120px; font-size: 16px" 
+                                <v-btn
+                                    style="margin-left: 120px; font-size: 16px"
                                     class="mt-5 dmsans font-weight-bold"
                                     elevation="0" color="white" variant="text" @click="navigateToPrivacy()"
                                 >
                                     Privacy
                                 </v-btn>
-                                <v-btn 
-                                    style="margin-left: 10px; font-size: 16px" 
+                                <v-btn
+                                    style="margin-left: 10px; font-size: 16px"
                                     class="mt-5 dmsans font-weight-bold"
                                     elevation="0" color="white" variant="text" @click="navigateToTerms()"
                                 >
@@ -661,32 +661,32 @@
                         </v-row>
                     </v-card-text>
                 </v-card>
-                <v-row 
+                <v-row
                     class="hidden-md-and-up"
                 >
-                    <v-col 
+                    <v-col
                         cols="12"
                     >
-                        <div 
+                        <div
                             class="mx-auto text-center"
                         >
-                            <v-btn 
-                                style="font-size: 16px" 
-                                class="mt-5 dmsans font-weight-bold" 
+                            <v-btn
+                                style="font-size: 16px"
+                                class="mt-5 dmsans font-weight-bold"
                                 elevation="0"
                                 color="white" variant="text" @click="navigateToPrivacy()"
                             >
                                 Privacy
                             </v-btn>
                         </div>
-                        <div 
+                        <div
                             class="mx-auto text-center"
                         >
-                            <v-btn 
-                                style="font-size: 16px" 
+                            <v-btn
+                                style="font-size: 16px"
                                 class="mb-5 dmsans font-weight-bold" elevation="0"
-                                color="white" 
-                                variant="text" 
+                                color="white"
+                                variant="text"
                                 @click="navigateToTerms()"
                             >
                                 Terms of Use
@@ -709,6 +709,7 @@ import { useGoTo } from 'vuetify';
 import { post } from 'aws-amplify/api';
 import * as utils from '../utils';
 import headerBlue from '../assets/header_blue.jpg'
+import Truce_Logo_White from '../assets/Truce_Logo_White.png'
 
 const router = useRouter();
 const goTo = useGoTo();

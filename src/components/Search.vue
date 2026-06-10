@@ -64,7 +64,7 @@ import {
 
 import { useRouter } from 'vue-router';
 import { useTheme } from 'vuetify';
-import { useAppStore } from '../stateAPI';
+import { useAppStore } from '@/stores/appStore';
 
 const appStore = useAppStore();
 const router = useRouter();
@@ -162,7 +162,7 @@ function navigate(name, type, id, equipmentType) {
 function populate(mutationProperty, value) {
     if (!value) return;
 
-    if (mutationProperty === 'broker_list') {
+    if (mutationProperty === 'brokerList') {
         if (
             !searchData.value.some(
                 (i) => i.header === 'Brokers'
@@ -177,7 +177,7 @@ function populate(mutationProperty, value) {
             mutationCount.value++;
         }
     } else if (
-        mutationProperty === 'shipper_list'
+        mutationProperty === 'shipperList'
     ) {
         if (
             !searchData.value.some(
@@ -193,7 +193,7 @@ function populate(mutationProperty, value) {
             mutationCount.value++;
         }
     } else if (
-        mutationProperty === 'lane_list'
+        mutationProperty === 'laneList'
     ) {
         if (
             !searchData.value.some(
@@ -254,18 +254,18 @@ onMounted(() => {
             appStore.$subscribe(
                 (_mutation, state) => {
                     populate(
-                        'broker_list',
-                        state.broker_list
+                        'brokerList',
+                        state.brokerList
                     );
 
                     populate(
-                        'shipper_list',
-                        state.shipper_list
+                        'shipperList',
+                        state.shipperList
                     );
 
                     populate(
-                        'lane_list',
-                        state.lane_list
+                        'laneList',
+                        state.laneList
                     );
                 }
             );
@@ -273,25 +273,25 @@ onMounted(() => {
         searchData.value = [
             { header: 'Brokers' },
 
-            ...(appStore.broker_list ?? []),
+            ...(appStore.brokerList ?? []),
 
             { divider: true },
 
             { header: 'Lanes' },
 
-            ...(appStore.lane_list ?? []),
+            ...(appStore.laneList ?? []),
         ];
     } else {
         searchData.value = [
             { header: 'Shippers' },
 
-            ...(appStore.shipper_list ?? []),
+            ...(appStore.shipperList ?? []),
 
             { divider: true },
 
             { header: 'Lanes' },
 
-            ...(appStore.lane_list ?? []),
+            ...(appStore.laneList ?? []),
         ];
     }
 });

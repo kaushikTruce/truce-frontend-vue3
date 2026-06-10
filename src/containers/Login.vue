@@ -16,7 +16,7 @@
                             style="margin-left: -40px;"
                             v-on:click="decrementCard"
                         >
-                            <v-icon 
+                            <v-icon
                                 theme="dark"
                             >
                                 mdi-arrow-left
@@ -31,7 +31,7 @@
                 <template v-if="cards[cardIdx] == 'initial'">
                     <br />
                     <v-card-title class="justify-center text-center text-h4 font-weight-bold mt-10">
-                        <v-img 
+                        <v-img
                             :src="Truce_Black"
                             max-height="120"
                         ></v-img>
@@ -54,7 +54,7 @@
                                 Login
                             </v-btn>
                             <v-btn
-                                v-if="provider == reyesProvider"    
+                                v-if="provider == reyesProvider"
                                 block
                                 @click="signInWithOkta"
                                 class="provider-button"
@@ -62,7 +62,7 @@
                                 Login with Okta
                             </v-btn>
                             <p class="link" style="color: #545454">
-                                Don't have an account? Contact us at 
+                                Don't have an account? Contact us at
                                 <a href="mailto:contact@truce.io">
                                     contact@truce.io
                                 </a> to sign up.
@@ -82,7 +82,7 @@
                         </v-col>
                     </v-card-actions>
                 </template>
-                
+
                 <template v-if="cards[cardIdx] == 'forgot'">
                     <v-card-title class="justify-center text-center text-h5">
                         Reset Password
@@ -231,8 +231,7 @@ import Truce_Black from '../assets/Truce_Black.png'
 import {
     ref,
     computed,
-    onBeforeMount,
-    getCurrentInstance
+    onBeforeMount
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { useTheme } from 'vuetify';
@@ -245,7 +244,7 @@ import {
     signInWithRedirect
 } from 'aws-amplify/auth';
 import { get } from 'aws-amplify/api';
-import * as stateAPI from '../stateAPI';
+import { useAppStore } from '@/stores/appStore';
 import * as user_analytics from '../analytics/sendAnalyticsEvent';
 import LoginScreen from '../authentication/auth_components/LoginScreen.vue';
 import SetPassword from '../authentication/auth_components/SetPassword.vue';
@@ -269,8 +268,8 @@ defineOptions({
 });
 
 const router = useRouter();
-const { proxy } = getCurrentInstance();
 const vuetifyTheme = useTheme();
+const appStore = useAppStore();
 const cards = ref([
     'initial',
     'signup',
@@ -323,7 +322,7 @@ const is_admin = ref(false);
 const cognitoUser = ref(null);
 
 const theme = computed(() => {
-    const dm = stateAPI.getStateProperty('darkMode') ?? stateAPI.getStateProperty('isDarkMode') ?? false;
+    const dm = appStore.darkMode ?? false;
     return dm ? 'dark' : 'light';
 });
 
@@ -743,11 +742,7 @@ async function navigate() {
         const data =
             await response.body.json();
 
-        stateAPI.setStateProperty(
-            proxy,
-            'user_id',
-            data.body.shipper_business_unit
-        );
+        appStore.user_id = data.body.shipper_business_unit;
 
         if (company.value === undefined) {
             company.value =
@@ -772,7 +767,7 @@ async function navigate() {
                 }
 
                 const dm = parsedData?.darkMode ?? false;
-                stateAPI.setStateProperty(proxy, 'darkMode', dm);
+                appStore.setDarkMode(dm);
 
                 try {
                     vuetifyTheme.change(dm ? 'dark' : 'light')
@@ -781,113 +776,57 @@ async function navigate() {
                 }
             });
 
-        stateAPI.setStateProperty(
-            proxy,
-            'equipment_type_list',
-            [
-                'Dry Van',
-                'Reefer',
-                'Flatbed',
-                'Power Only',
-                'Straight Truck'
-            ]
-        );
+        appStore.equipment_type_list = [
+            'Dry Van',
+            'Reefer',
+            'Flatbed',
+            'Power Only',
+            'Straight Truck'
+        ];
 
-        stateAPI.setStateProperty(
-            proxy,
-            'crumbs',
-            []
-        );
+        appStore.crumbs = [];
 
-        stateAPI.setStateProperty(
-            proxy,
-            'crumbIds',
-            ['dashboard']
-        );
+        appStore.crumbIds = ['dashboard'];
 
         const usn =
             email.value.split('@')[0];
 
-        stateAPI.setStateProperty(
-            proxy,
-            'username',
-            usn
-        );
+        appStore.username = usn;
 
-        stateAPI.setStateProperty(
-            proxy,
-            'email',
-            email.value
-        );
+        appStore.email = email.value;
 
-        stateAPI.setStateProperty(
-            proxy,
-            'name',
-            full_name.value
-        );
+        appStore.name = full_name.value;
 
-        stateAPI.setStateProperty(
-            proxy,
-            'phone_number',
-            phone_number.value
-        );
+        appStore.phone_number = phone_number.value;
 
-        stateAPI.setStateProperty(
-            proxy,
-            'company',
-            company.value
-        );
+        appStore.company = company.value;
 
         const calc_enabled = [
             'BlueGrace Logistics'
         ];
 
-        stateAPI.setStateProperty(
-            proxy,
-            'calc_enabled',
+        appStore.calc_enabled =
             role.value !== 'broker' ||
-                calc_enabled.includes(
-                    company.value
-                )
-        );
+            calc_enabled.includes(
+                company.value
+            );
 
-        stateAPI.setStateProperty(
-            proxy,
-            'role',
-            role.value
-        );
+        appStore.role = role.value;
 
-        stateAPI.setStateProperty(
-            proxy,
-            'first_load',
-            true
-        );
+        appStore.first_load = true;
 
-        stateAPI.setStateProperty(
-            proxy,
-            'is_admin',
-            is_admin.value
-        );
+        appStore.is_admin = is_admin.value;
 
         // Analytics
 
         const analyticsEmail =
-            stateAPI.getStateProperty(
-                proxy,
-                'email'
-            );
+            appStore.email;
 
         const analyticsCompany =
-            stateAPI.getStateProperty(
-                proxy,
-                'company'
-            );
+            appStore.company;
 
         const analyticsRole =
-            stateAPI.getStateProperty(
-                proxy,
-                'role'
-            );
+            appStore.role;
 
         user_analytics.sendEvent(
             analyticsEmail,

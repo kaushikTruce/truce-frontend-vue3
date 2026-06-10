@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import VueApexCharts from "vue3-apexcharts";
 
 import {
     fetchAuthSession,
@@ -21,6 +22,7 @@ import '@mdi/font/css/materialdesignicons.css';
 import './us-map';
 
 import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 configureAmplify();
 
@@ -147,6 +149,13 @@ const routes = [
         props: true,
         beforeEnter: guard
     },
+    {
+        name: 'lane-dashboard',
+        path: '/app/laneDashboard',
+        component: ShipperDashboard,
+        props: true,
+        beforeEnter: guard
+    }
 ];
 
 const router = createRouter({
@@ -155,7 +164,8 @@ const router = createRouter({
 })
 
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
 const app = createApp(App);
-app.use(vuetify).use(router).use(pinia);
+app.use(vuetify).use(router).use(pinia).use(VueApexCharts);
 app.mount('#app');

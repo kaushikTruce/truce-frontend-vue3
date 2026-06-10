@@ -141,7 +141,7 @@ const validatePassword = (value) => {
     updateCreationRule('uppercase', /[A-Z]/.test(value));
     updateCreationRule('numerical', /\d/.test(value));
     updateCreationRule(
-        'special', 
+        'special',
         /[~`!@#$%^&*+=\-[\]\\';,/{}|\\":<>?]/.test(value)
     );
     updateCreationRule('length', value.length >= 8);
